@@ -17,6 +17,7 @@ class PerfilType extends AbstractType
             ->add('apellidos')
             ->add('direccion')
             ->add('telefono')
+            ->add('sexo')
             ->add('usuario')
         ;
     }

@@ -57,6 +57,13 @@ class Perfil
     private $telefono;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="sexo", type="string", length=255, nullable=false)
+     */
+    private $sexo;
+
+    /**
      * @var \User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -127,6 +134,18 @@ class Perfil
     public function setTelefono(?string $telefono): self
     {
         $this->telefono = $telefono;
+
+        return $this;
+    }
+
+    public function getSexo(): ?string
+    {
+        return $this->sexo;
+    }
+
+    public function setSexo(string $sexo): self
+    {
+        $this->sexo = $sexo;
 
         return $this;
     }

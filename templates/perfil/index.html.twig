@@ -14,6 +14,7 @@
                 <th>Apellidos</th>
                 <th>Direccion</th>
                 <th>Telefono</th>
+                <th>Sexo</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -26,6 +27,7 @@
                 <td>{{ perfil.apellidos }}</td>
                 <td>{{ perfil.direccion }}</td>
                 <td>{{ perfil.telefono }}</td>
+                <td>{{ perfil.sexo }}</td>
                 <td>
                     <a href="{{ path('perfil_show', {'id': perfil.id}) }}">show</a>
                     <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">edit</a>
