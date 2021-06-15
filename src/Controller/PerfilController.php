@@ -56,8 +56,10 @@ class PerfilController extends AbstractController
      */
     public function show(Perfil $perfil): Response
     {
+        $current_user = $this->getUser();
         return $this->render('perfil/show.html.twig', [
             'perfil' => $perfil,
+            'current_user_id' => $current_user->getId(),
         ]);
     }
 

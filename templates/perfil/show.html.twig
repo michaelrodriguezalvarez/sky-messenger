@@ -6,11 +6,7 @@
     <h1>Perfil</h1>
 
     <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ perfil.id }}</td>
-            </tr>
+        <tbody>           
             <tr>
                 <th>Nick</th>
                 <td>{{ perfil.nick }}</td>
@@ -35,12 +31,15 @@
                 <th>Sexo</th>
                 <td>{{ perfil.sexo }}</td>
             </tr>
+            <tr>
+                <th>Correo</th>
+                <td>{{ perfil.usuario.email }}</td>
+            </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('perfil_index') }}">back to list</a>
-
-    <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">edit</a>
-
-    {{ include('perfil/_delete_form.html.twig') }}
+    {% if current_user_id == perfil.usuario.id %}
+        <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">Editar</a>
+    {% endif %}
+    
 {% endblock %}

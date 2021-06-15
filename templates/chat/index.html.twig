@@ -21,7 +21,12 @@
 </pre>
 <header>
 <div>Escribiendo a <span><b>Sala pública</b></span><span id="destinatario">-1</span></div>
-<div>Area del usuario logueado</div>
+<div>
+<span>Usuario logueado: <b>{{ perfil.nick }}</b></span>
+<a href="{{ path ('app_logout')}}">(Salir)</a>
+<br />
+<a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi perfil</a>
+</div>
 </header>
 
 <article>
