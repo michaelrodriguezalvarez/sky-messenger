@@ -86,5 +86,10 @@ class Actividad
         return $this;
     }
 
+    public function isActiveNow(): bool
+    {
+        $delay = new \DateTime('2 minutes ago');
+        return ($this->getLastActivityAt() > $delay);
+    }
 
 }
