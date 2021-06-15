@@ -12,6 +12,7 @@ class PerfilType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('nick')
             ->add('nombre')
             ->add('apellidos')
             ->add('direccion')

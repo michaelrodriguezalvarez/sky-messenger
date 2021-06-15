@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Nick</th>
                 <th>Nombre</th>
                 <th>Apellidos</th>
                 <th>Direccion</th>
@@ -20,6 +21,7 @@
         {% for perfil in perfils %}
             <tr>
                 <td>{{ perfil.id }}</td>
+                <td>{{ perfil.nick }}</td>
                 <td>{{ perfil.nombre }}</td>
                 <td>{{ perfil.apellidos }}</td>
                 <td>{{ perfil.direccion }}</td>

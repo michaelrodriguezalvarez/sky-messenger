@@ -22,6 +22,13 @@ class Perfil
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="nick", type="string", length=255, nullable=false)
+     */
+    private $nick;
+
+    /**
      * @var string|null
      *
      * @ORM\Column(name="nombre", type="string", length=255, nullable=true)
@@ -62,6 +69,18 @@ class Perfil
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getNick(): ?string
+    {
+        return $this->nick;
+    }
+
+    public function setNick(string $nick): self
+    {
+        $this->nick = $nick;
+
+        return $this;
     }
 
     public function getNombre(): ?string
