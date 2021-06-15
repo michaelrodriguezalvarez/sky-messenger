@@ -5,22 +5,31 @@
 {% block javascripts %}
     <script type="text/javascript">
         $(document).ready(function (){   
-            var idDestinarario = -1;         
-            EstablecerDestinatario(idDestinarario);          
+            var idDestinarario = -1;                      
+            EstablecerDestinatario(idDestinarario);
+
+            var destinararios1 = [];
+            $.get("{{path('get_logued_users')}}", function(data, status){
+                if(status == 'success'){
+                    destinatarios1 = data.data;
+                }              
+            });         
         });
+        var destinararios = {
+                '-1': 'Sala pública',
+                '1': 'Usuario 1',
+                '2': 'Usuario 2'
+            }  
         function EstablecerDestinatario(idDestinarario){
             this.idDestinarario = idDestinarario;
-            $('#destinatario').text(this.idDestinarario);
+            $('#destinatario').text(destinararios[this.idDestinarario]);
         }        
     </script>
 {% endblock %}
 
 {% block body %}
-<pre>
-    {{ dump(perfil) }}
-</pre>
 <header>
-<div>Escribiendo a <span><b>Sala pública</b></span><span id="destinatario">-1</span></div>
+<div>Escribiendo a <span id="destinatario">Nada<b></b></span></div>
 <div>
 <span>Usuario logueado: <b>{{ perfil.nick }}</b></span>
 <a href="{{ path ('app_logout')}}">(Salir)</a>
@@ -36,10 +45,10 @@
 </article>
 
 <aside>
-    <ul>
-        <li>Sala pública <a href="#" onclick="EstablecerDestinatario(-1);">Compartir</a></li>
-        <li>Usuario 1 <a href="#" onclick="EstablecerDestinatario(1)">Privado</a><span> </span><a href="#">Perfil</a></li>
-        <li>Usuario 2 <a href="#" onclick="EstablecerDestinatario(2)">Privado</a><span> </span><a href="#">Perfil</a></li>
+    <ul id="listado_destinatarios">
+        <li>Sala pública <a href="#" onclick="EstablecerDestinatario(-1);">Escribir</a></li>
+        <li>Usuario 1 <a href="#" onclick="EstablecerDestinatario(1)">Escribir</a><span> </span><a href="#">Perfil</a></li>
+        <li>Usuario 2 <a href="#" onclick="EstablecerDestinatario(2)">Escribir</a><span> </span><a href="#">Perfil</a></li>
     </ul>
 </aside>
 

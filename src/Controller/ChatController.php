@@ -28,13 +28,15 @@ class ChatController extends AbstractController
     /**
      * @Route("/api/get_logued_users", name="get_logued_users")
      */
-    public function getLoguedList(Request $request, UserRepository $userRepository): Response
+    public function getLoguedList(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository): Response
     {
-        $users_logued = $userRepository->findAll();
+        $perfiles = $perfilRepository->findAll();
+        
         $users = [];
 
-        foreach ($users_logued as $user) {
-            array_push($users, ['id'=>$user->getId(), 'email'=>$user->getEmail()]);
+        array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
+        foreach ($perfiles as $perfil) {
+            array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId()]);
         }
 
         $response = new JsonResponse();
