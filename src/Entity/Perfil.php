@@ -64,6 +64,13 @@ class Perfil
     private $sexo;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="descripcion", type="text", length=65535, nullable=true)
+     */
+    private $descripcion;
+
+    /**
      * @var \User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -146,6 +153,18 @@ class Perfil
     public function setSexo(string $sexo): self
     {
         $this->sexo = $sexo;
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(?string $descripcion): self
+    {
+        $this->descripcion = $descripcion;
 
         return $this;
     }

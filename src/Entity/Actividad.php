@@ -36,6 +36,13 @@ class Actividad
     private $estado;
 
     /**
+     * @var string|null
+     *
+     * @ORM\Column(name="codigo", type="string", length=255, nullable=true)
+     */
+    private $codigo;
+
+    /**
      * @var \User
      *
      * @ORM\ManyToOne(targetEntity="User")
@@ -74,6 +81,18 @@ class Actividad
         return $this;
     }
 
+    public function getCodigo(): ?string
+    {
+        return $this->codigo;
+    }
+
+    public function setCodigo(?string $codigo): self
+    {
+        $this->codigo = $codigo;
+
+        return $this;
+    }
+
     public function getUsuario(): ?User
     {
         return $this->usuario;
@@ -91,5 +110,5 @@ class Actividad
         $delay = new \DateTime('2 minutes ago');
         return ($this->getLastActivityAt() > $delay);
     }
-
+    
 }

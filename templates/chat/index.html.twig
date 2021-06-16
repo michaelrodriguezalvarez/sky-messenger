@@ -52,18 +52,21 @@
 
 {% block body %}
 <header>
-<div>Escribiendo a <b><span id="destinatario">Cargando...</span></b></div>
+<div>Conversación con <b><span id="destinatario">Cargando...</span></b></div>
 <div>
-<span>Usted ha accedido como: <b>{{ perfil.nick }}</b></span>
+<span>Usted ha accedido como <b>{{ perfil.nick }}</b></span>
 <a href="{{ path ('app_logout')}}">(Salir)</a>
 <br />
-<a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi perfil</a>
+<a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">(Mi perfil)</a>
 </div>
 </header>
 
 <article>
     <section>
-    Area para los mensajes
+        Areas para los mensajes remitente y destinatario (1)
+    </section>
+    <section>
+        Areas para los mensajes remitente y destinatario (2)
     </section>
 </article>
 
