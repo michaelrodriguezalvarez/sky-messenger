@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\PerfilRepository;
 use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -108,24 +109,35 @@ class UserController extends AbstractController
      */
     public function getLoguedList(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository): JsonResponse
     {
-        $perfiles = $perfilRepository->findAll();
-        
-        $users = [];
+        try {
+            $perfiles = $perfilRepository->findAll();  
+            throw new Exception("asdasdasd");                 
+            $users = [];
+            // Estableciendo como primer elemento a la sala pública
+            array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
 
-        // Estableciendo como primer elemento a la sala pública
-        array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
+            foreach ($perfiles as $perfil) {
+                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId()]);
+            }
 
-        foreach ($perfiles as $perfil) {
-            array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId()]);
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => true,
+                'data' => $users
+            ]);
+            $response->setStatusCode(Response::HTTP_OK);
+
+            return $response;
+        } catch (\Throwable $th) {           
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+            ]);
+
+            $response->setStatusCode(Response::HTTP_OK);
+
+            return $response;
         }
-
-        $response = new JsonResponse();
-        $response->setData([
-            'success' => true,
-            'data' => $users
-        ]);
-        return $response;
-
-        return new JsonResponse($users, Response::HTTP_OK);
     }
 }

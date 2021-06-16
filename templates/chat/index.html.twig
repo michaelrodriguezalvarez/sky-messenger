@@ -13,7 +13,7 @@
         ActualizarUsuariosLogueados = function (){
                 $.get("{{path('get_logued_users')}}", function(data, status){
                     $("#listado_destinatarios ul").empty();
-                    if(status == 'success'){
+                    if(status == 'success' && data.success == true){
                         usuarios_logueados = data.data;  
                         usuarios_logueados.map(function (element){
                             if(element.id != -1){ //Si no es la sala publica 
@@ -32,6 +32,7 @@
                     }else{
                         usuarios_logueados = [];
                         $("#listado_destinatarios ul").append('<li>Error cargando los elementos :-(</li>');
+                        $('#destinatario').text('Error cargando el elemento :-(');
                     }             
                 });  
             };
