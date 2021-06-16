@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\PerfilRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -99,5 +101,31 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('user_index');
+    }
+
+    /**
+     * @Route("/api/get_logued_users", name="get_logued_users", methods={"GET"})
+     */
+    public function getLoguedList(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository): JsonResponse
+    {
+        $perfiles = $perfilRepository->findAll();
+        
+        $users = [];
+
+        // Estableciendo como primer elemento a la sala pública
+        array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
+
+        foreach ($perfiles as $perfil) {
+            array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId()]);
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => true,
+            'data' => $users
+        ]);
+        return $response;
+
+        return new JsonResponse($users, Response::HTTP_OK);
     }
 }

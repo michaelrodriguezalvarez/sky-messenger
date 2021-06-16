@@ -3,35 +3,58 @@
 {% block title %}Chat{% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        $(document).ready(function (){   
-            var idDestinarario = -1;                      
-            EstablecerDestinatario(idDestinarario);
+    <script type="text/javascript">    
+        var usuarios_logueados = [];
+        var base_url = ''+'{{ app.request.baseUrl }}'+'';
+        var id_destinatario_seleccionado = -1;
+        var nick_destinatario_seleccionado = '';
+        var iniciando = true;
 
-            var destinararios1 = [];
-            $.get("{{path('get_logued_users')}}", function(data, status){
-                if(status == 'success'){
-                    destinatarios1 = data.data;
-                }              
-            });         
+        ActualizarUsuariosLogueados = function (){
+                $.get("{{path('get_logued_users')}}", function(data, status){
+                    $("#listado_destinatarios ul").empty();
+                    if(status == 'success'){
+                        usuarios_logueados = data.data;  
+                        usuarios_logueados.map(function (element){
+                            if(element.id != -1){ //Si no es la sala publica 
+                                if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
+                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a><span> </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
+                                }
+                            }else{ //La sala publica no require de perfil
+                                $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a></li>');
+                            }                            
+                        });
+
+                        if(iniciando == true && usuarios_logueados.length > 0){
+                            EstablecerDestinatario(usuarios_logueados[0].id, usuarios_logueados[0].nick);
+                            iniciando = false;
+                        }
+                    }else{
+                        usuarios_logueados = [];
+                        $("#listado_destinatarios ul").append('<li>Error cargando los elementos :-(</li>');
+                    }             
+                });  
+            };
+
+        EstablecerDestinatario = function (id_destinarario, nick_destinatario){           
+            destinatario_seleccionado = id_destinarario;
+            nick_destinatario_seleccionado = nick_destinatario;
+            $('#destinatario').text(nick_destinatario_seleccionado);
+        }
+
+        //Cuando el documento cargue
+        $(document).ready(function (){            
+            ActualizarUsuariosLogueados();
         });
-        var destinararios = {
-                '-1': 'Sala pública',
-                '1': 'Usuario 1',
-                '2': 'Usuario 2'
-            }  
-        function EstablecerDestinatario(idDestinarario){
-            this.idDestinarario = idDestinarario;
-            $('#destinatario').text(destinararios[this.idDestinarario]);
-        }        
+        
     </script>
 {% endblock %}
 
 {% block body %}
 <header>
-<div>Escribiendo a <span id="destinatario">Nada<b></b></span></div>
+<div>Escribiendo a <b><span id="destinatario">Cargando...</span></b></div>
 <div>
-<span>Usuario logueado: <b>{{ perfil.nick }}</b></span>
+<span>Usted ha accedido como: <b>{{ perfil.nick }}</b></span>
 <a href="{{ path ('app_logout')}}">(Salir)</a>
 <br />
 <a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi perfil</a>
@@ -45,16 +68,17 @@
 </article>
 
 <aside>
-    <ul id="listado_destinatarios">
-        <li>Sala pública <a href="#" onclick="EstablecerDestinatario(-1);">Escribir</a></li>
-        <li>Usuario 1 <a href="#" onclick="EstablecerDestinatario(1)">Escribir</a><span> </span><a href="#">Perfil</a></li>
-        <li>Usuario 2 <a href="#" onclick="EstablecerDestinatario(2)">Escribir</a><span> </span><a href="#">Perfil</a></li>
-    </ul>
+    <button type="button" onclick="ActualizarUsuariosLogueados()">Actualizar</button>
+    <div id="listado_destinatarios">
+        <ul>
+            <li>Cargando...</li>
+        </ul>
+    </div>    
 </aside>
 
 <article>
 <input type="text" name="texto" placeholder="Escriba el mensaje">
-<button type="submit" onclick="alert(idDestinarario);">Enviar</button>
+<button type="submit" onclick="alert('En desarrollo...');">Enviar</button>
 </article>
 
 {% endblock %}
