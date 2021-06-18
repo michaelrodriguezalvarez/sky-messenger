@@ -110,8 +110,7 @@ class UserController extends AbstractController
     public function getLoguedList(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository): JsonResponse
     {
         try {
-            $perfiles = $perfilRepository->findAll();  
-            throw new Exception("asdasdasd");                 
+            $perfiles = $perfilRepository->findAll();               
             $users = [];
             // Estableciendo como primer elemento a la sala pública
             array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
