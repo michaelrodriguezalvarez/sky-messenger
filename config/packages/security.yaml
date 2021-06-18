@@ -37,3 +37,11 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: IS_ANONYMOUS }
+        - { path: ^/register, roles: IS_ANONYMOUS }
+        - { path: ^/chat, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/mensaje/api/send, roles: IS_AUTHENTICATED_FULLY, methods: [POST] }
+        - { path: ^/user/api/get_logued_users, roles: IS_AUTHENTICATED_FULLY, methods: [GET] }
+        - { path: ^/perfil/\d+$, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/perfil/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
+

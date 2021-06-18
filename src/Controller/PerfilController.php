@@ -68,6 +68,13 @@ class PerfilController extends AbstractController
      */
     public function edit(Request $request, Perfil $perfil): Response
     {
+        /** @var $current_user User */
+        $current_user = $this->getUser();
+        if($current_user->getRoles()[0] == "ROLE_USER"){
+            if($current_user->getId() != $perfil->getUsuario()->getId()){
+                throw $this->createAccessDeniedException();
+            }
+        }
         $form = $this->createForm(PerfilType::class, $perfil);
         $form->handleRequest($request);
 
