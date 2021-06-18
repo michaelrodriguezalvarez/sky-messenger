@@ -4,7 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Mensaje;
 use App\Form\MensajeType;
+use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -93,5 +97,52 @@ class MensajeController extends AbstractController
         }
 
         return $this->redirectToRoute('mensaje_index');
+    }
+
+    /**
+     * @Route("/api/send", name="mensaje_enviar", methods={"POST"})
+     */
+    public function send(Request $request, UserRepository $userRepository): Response
+    {
+        try {
+            if($_POST){                
+                $current_user = $this->getUser();
+                if ($this->isCsrfTokenValid('enviar_mensaje'.$current_user->getId(), $request->request->get('_token'))) {
+                    $mensaje = new Mensaje();
+                    $mensaje->setTexto($request->request->get('texto'));
+                    $mensaje->setFecha(new \DateTime());
+                    $mensaje->setDestinatario($userRepository->findOneBy(array('id' => $request->request->get('destinatario'))));
+                    $mensaje->setRemitente($this->getUser());
+                    
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($mensaje);
+                    $entityManager->flush();
+        
+                    $response = new JsonResponse();
+                    $response->setData([
+                        'success' => true,
+                        'data' => 'Message sent'
+                    ]);
+                    $response->setStatusCode(Response::HTTP_OK);
+        
+                    return $response;
+                }else{
+                    throw new BadRequestException(Response::HTTP_BAD_REQUEST);
+                }
+            }else{
+                throw new BadRequestException(Response::HTTP_BAD_REQUEST);
+            }
+
+        } catch (\Throwable $th) {           
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+            ]);
+
+            $response->setStatusCode(Response::HTTP_OK);
+
+            return $response;
+        }
     }
 }

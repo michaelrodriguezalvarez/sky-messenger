@@ -38,14 +38,49 @@
             };
 
         EstablecerDestinatario = function (id_destinarario, nick_destinatario){           
-            destinatario_seleccionado = id_destinarario;
+            id_destinatario_seleccionado = id_destinarario;
             nick_destinatario_seleccionado = nick_destinatario;
             $('#destinatario').text(nick_destinatario_seleccionado);
+        }
+
+        EnviarMensaje = function(){
+            var texto = $("#texto").val();            
+            var _token = $("#_token").val();
+
+            if(texto != ""){
+                $.post(
+                        "{{path('mensaje_enviar')}}", 
+                        {
+                            texto: texto, 
+                            destinatario: id_destinatario_seleccionado, 
+                            _token: _token
+                        }, 
+                        function(data, status){
+                            if(status == 'success' && data.success == true){
+                                $("#texto").val("");
+                                $("#texto").focus();
+                                console.log(data.data);
+                            }else{
+                                alert("Error: "+ data.error);
+                            }
+                        }
+                    );
+            }else{
+                alert("Error: You have must text any message.");
+            }            
         }
 
         //Cuando el documento cargue
         $(document).ready(function (){            
             ActualizarUsuariosLogueados();
+
+            $('#texto').keypress(function(event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    EnviarMensaje();  
+                }
+            });
+
         });
         
     </script>
@@ -81,8 +116,9 @@
 </aside>
 
 <article>
-<input type="text" name="texto" placeholder="Escriba el mensaje">
-<button type="submit" onclick="alert('En desarrollo...');">Enviar</button>
+<input type="hidden" id="_token" name="_token" value="{{ csrf_token('enviar_mensaje' ~ perfil.usuario.id) }}">
+<input id="texto" type="text" name="texto" placeholder="Escriba el mensaje">
+<button type="submit" onclick="EnviarMensaje()">Enviar</button>
 </article>
 
 {% endblock %}
