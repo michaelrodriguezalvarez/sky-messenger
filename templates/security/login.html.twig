@@ -48,7 +48,17 @@
     {% endif %}
 
      {% for flashSuccess in app.flashes('success') %}
-        <div class="alert alert-info" role="alert">{{ flashSuccess }}</div>
+
+	 <script>
+        Swal.fire({
+			icon: 'info',
+			title: 'Se ha registrado con exito!',
+			text: 'Por favor revise su bandeja de entrada, le hemos enviado un correo de validación.'
+			
+			})
+        </script>
+
+        {# <div class="alert alert-info" role="alert">{{ flashSuccess }}</div> #}
     {% endfor %}
 
     {% if app.user %}
@@ -102,7 +112,7 @@
 					</div>
 
 					<div class="text-center w-full">
-						<a class="txt1" href="#">
+						<a class="txt1" href="register">
 							Crear una nueva cuenta
 							<i class="fa fa-long-arrow-right"></i>						
 						</a>
