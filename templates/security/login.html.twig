@@ -2,10 +2,49 @@
 
 {% block title %}Log in!{% endblock %}
 
+
+
+ {% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animate/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
+
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.js') }}"></script>
+{% endblock %}
+
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+
+
+
+<div class="limiter">
+		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
+			<div class="wrap-login100 p-t-190 p-b-30">
+				<form method="post" class="login100-form validate-form">
+
+                {% if error %}
+        {# <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}
+
+        <script>
+        Swal.fire({
+  icon: 'error',
+  title: '¡Error!',
+  text: 'Por favor verifique sus credenciales',
+  footer: '<a href="">¿Olvidó su usuario/contraseña?</a>'
+})
+        </script>
     {% endif %}
 
      {% for flashSuccess in app.flashes('success') %}
@@ -17,34 +56,77 @@
             You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
         </div>
     {% endif %}
+					<div class="login100-form-avatar">
+						<img src="images/sky_messenger.jpg" alt="AVATAR">
+					</div>
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" required>
+					<span class="login100-form-title p-t-20 p-b-45">
+						Sky Messenger
+					</span>
 
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >    
+					<div class="wrap-input100 validate-input m-b-10" data-validate = "Username is required">
+						{# <input class="input100" type="text" name="username" placeholder="Username"> #}
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="input100" required autofocus>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user"></i>
+						</span>
+					</div>
 
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
+					<div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
+						{# <input class="input100" type="password" name="pass" placeholder="Password"> #}
+                         <input class="input100" type="password" name="password" id="inputPassword" placeholder="Password" required>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock"></i>
+						</span>
+					</div>
+                    <div class="container-login100-form-btn p-t-10">
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
+
+<label class="txt2">
+                <input type="checkbox"  name="_remember_me"> Recuerdame
             </label>
-        </div>
-    #}
-
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
-
-<div>
-    <span>Don't have an account? </span><a href="{{ path('app_register')}}">Register</a>
 </div>
+
+					<div class="container-login100-form-btn p-t-10">
+						<button class="login100-form-btn" type="submit">
+							Entrar
+						</button>
+					</div>
+
+					<div class="text-center w-full p-t-25 p-b-230">
+						<a href="#" class="txt1">
+							¿Olvidó su usuario/contraseña?
+						</a>
+					</div>
+
+					<div class="text-center w-full">
+						<a class="txt1" href="#">
+							Crear una nueva cuenta
+							<i class="fa fa-long-arrow-right"></i>						
+						</a>
+					</div>
+
+                     <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}"
+    >  
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+
+{# <div>
+    <span>Don't have an account? </span><a href="{{ path('app_register')}}">Register</a>
+</div> #}
+
+
+
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}
