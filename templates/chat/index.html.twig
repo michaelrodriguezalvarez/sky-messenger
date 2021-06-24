@@ -17,7 +17,11 @@
         <script type="text/javascript" src="{{ asset('vendor/chat/js/jquery.mCustomScrollbar.min.js') }}"></script>
         <script type="text/javascript" src="{{ asset('vendor/chat/js/main.js') }}"></script>
 
-    <script type="text/javascript">    
+    <script type="text/javascript">   
+
+        function imageClick(url) {
+        window.location = url;
+            }; 
         var usuarios_logueados = [];
         var base_url = ''+'{{ app.request.baseUrl }}'+'';
         var id_destinatario_seleccionado = -1;
@@ -27,20 +31,31 @@
         ActualizarUsuariosLogueados = function (){
                 $.get("{{path('get_logued_users')}}", function(data, status){
                     $("#listado_destinatarios ul").empty();
+                    $("#usuarios").empty();
                     if(status == 'success' && data.success == true){
                         usuarios_logueados = data.data;  
                         usuarios_logueados.map(function (element){
                             
                             //Array para mostrar el rol de forma mas legible a los usuarios
                             $roles = [];
-                            $roles["ROLE_USER"]="(Usuario)";$roles["ROLE_ADMIN"]="(Administrador)";
+                            $roles["ROLE_USER"]="Usuario";$roles["ROLE_ADMIN"]="Administrador";
 
                             if(element.id != -1){ //Si no es la sala publica 
                                 if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
                                     $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a><span> '+ $roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
+
+                                    var perfilUrl = base_url+'/perfil/'+element.perfil;
+                                    
+                                    
+                                    $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</span></a><p>'+$roles[element.roles]+'</p></div></div></li>');
+
+
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a></li>');
+
+                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img"><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</span></a></div></div></li>');
+
                             }                            
                         });
 
@@ -107,8 +122,9 @@
 
 {% block body %}
 <header>
-<div>Conversación con <b><span id="destinatario">Cargando...</span></b></div>
-<div>
+
+{# <div>Conversación con <b><span id="destinatario">Cargando...</span></b></div>
+<div> 
 <span>Usted ha accedido como <b>{{ perfil.nick }}</b></span>
 <a href="{{ path ('app_logout')}}">(Salir)</a>
 <br />
@@ -117,7 +133,7 @@
 {% if is_granted('ROLE_ADMIN') %}
     <a target="_blank" href="{{ path ('app_admin') }}">(Administrar)</a>
 {% endif %}
-</div>
+</div> #}
 </header>
 
 <article>
@@ -129,20 +145,22 @@
     </section>
 </article>
 
-<aside>
+{# <aside>
     <button type="button" onclick="ActualizarUsuariosLogueados()">Actualizar</button>
     <div id="listado_destinatarios">
         <ul>
             <li>Cargando...</li>
         </ul>
     </div>    
-</aside>
+</aside> #}
 
 <article>
 <input type="hidden" id="_token" name="_token" value="{{ csrf_token('enviar_mensaje' ~ perfil.usuario.id) }}">
 {# <input id="texto" type="text" name="texto" placeholder="Escriba el mensaje">
 <button type="submit" onclick="EnviarMensaje()">Enviar</button> #}
 </article>
+
+
 {# PLANTILLA ====================================================================================================================================================================================#}
 
 <div class="container-fluid h-100">
@@ -151,18 +169,32 @@
 
                     {# Buscar #}
 					<div class="card-header">
+                    <i class="fa fa-bolt" onclick="ActualizarUsuariosLogueados()" alt="asdasd"></i>
 						<div class="input-group">
 							<input type="text" placeholder="Search..." name="" class="form-control search">
 							<div class="input-group-prepend">
 								<span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
 							</div>
+                            
 						</div>
+                        
 					</div>
 
                     {# Lista de Usuarios Conectados #}
 					<div class="card-body contacts_body">
-						<ui class="contacts">
-						<li class="active">
+
+						<ui class="contacts" id="usuarios">
+
+                        
+
+                            {# <div id="listado_destinatarios">
+                                <ul>
+                                    <li>Cargando...</li>
+                                </ul>
+                             </div>   #}
+
+
+						{# <li class="active">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
 									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img">
@@ -173,8 +205,9 @@
 									<p>Kalid is online</p>
 								</div>
 							</div>
-						</li>
-						<li>
+						</li> #}
+
+						{# <li>
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
 									<img src="{{ asset('vendor/chat/img/31.jpg') }}" class="rounded-circle user_img">
@@ -221,24 +254,28 @@
 									<p>Rashid left 50 mins ago</p>
 								</div>
 							</div>
-						</li>
-						</ui>
+						</li> #}
+                        </ui>
 					</div>
 					<div class="card-footer"></div>
 				</div></div>
 
-                {# Panel Principal donde se muestran los mensajes etc.... #}
+                {# Panel Principal#}
 				<div class="col-md-8 col-xl-6 chat">
 					<div class="card">
+
+                            {# Cabecera del Panel Principal #}
 						<div class="card-header msg_head">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img">
+									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick="alert('jojo')">
 									<span class="online_icon"></span>
 								</div>
 								<div class="user_info">
-									<span>Chat with Khalid</span>
-									<p>1767 Messages</p>
+                                    
+									<span id="destinatario">Cargando</span>
+                                    
+									<p>{{ perfil.nick }}</p>
 								</div>
 								<div class="video_cam">
 									<span><i class="fas fa-video"></i></span>
@@ -254,11 +291,13 @@
 									<li><i class="fas fa-lock"></i> <a target="_blank" href="{{ path ('app_admin') }}">Administración</a></li>
                                     {% endif %}
 
-									<li><i class="fas fa-minus-circle"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
+									<li><i class="fas fa-times"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
 									{# <li><i class="fas fa-ban"></i> Block</li> #}
 								</ul>
 							</div>
 						</div>
+
+                        {# Aqui se muestran los mensajes #}
 						<div class="card-body msg_card_body">
 							<div class="d-flex justify-content-start mb-4">
 								<div class="img_cont_msg">
