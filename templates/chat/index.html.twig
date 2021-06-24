@@ -16,9 +16,14 @@
                     if(status == 'success' && data.success == true){
                         usuarios_logueados = data.data;  
                         usuarios_logueados.map(function (element){
+                            
+                            //Array para mostrar el rol de forma mas legible a los usuarios
+                            $roles = [];
+                            $roles["ROLE_USER"]="(Usuario)";$roles["ROLE_ADMIN"]="(Administrador)";
+
                             if(element.id != -1){ //Si no es la sala publica 
                                 if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
-                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a><span> </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
+                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a><span> '+ $roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a></li>');
