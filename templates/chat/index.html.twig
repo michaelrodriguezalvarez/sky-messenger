@@ -99,6 +99,10 @@
 <a href="{{ path ('app_logout')}}">(Salir)</a>
 <br />
 <a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">(Mi perfil)</a>
+<br />
+{% if is_granted('ROLE_ADMIN') %}
+    <a target="_blank" href="{{ path ('app_admin') }}">(Administrar)</a>
+{% endif %}
 </div>
 </header>
 

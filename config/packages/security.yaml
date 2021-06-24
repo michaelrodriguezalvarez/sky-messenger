@@ -44,4 +44,5 @@ security:
         - { path: ^/user/api/get_logued_users, roles: IS_AUTHENTICATED_FULLY, methods: [GET] }
         - { path: ^/perfil/\d+$, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/perfil/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
