@@ -116,7 +116,8 @@ class UserController extends AbstractController
             array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
 
             foreach ($perfiles as $perfil) {
-                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId()]);
+                //Aquí añadí 'roles'=>$perfil->getUsuario()->getRoles() para que devuevla el rol como parte de los datos.
+                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId(), 'roles'=>$perfil->getUsuario()->getRoles()]);
             }
 
             $response = new JsonResponse();
