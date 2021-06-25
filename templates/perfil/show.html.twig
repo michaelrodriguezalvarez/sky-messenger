@@ -2,9 +2,23 @@
 
 {% block title %}Perfil{% endblock %}
 
-{% block body %}
-    <h1>Perfil</h1>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chat/css/jquery.mCustomScrollbar.min.css') }}">
+{% endblock %}
 
+{% block body %}
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center h-100">
+        <div class="col-md-8 col-xl-8 chat">
+            <div class="card mb-sm-3 mb-md-3 contacts_card">
+    <h1><center>Perfil</center></h1>
+
+    
+<center>
     <table class="table">
         <tbody>           
             <tr>
@@ -41,9 +55,25 @@
             </tr>
         </tbody>
     </table>
+  {# <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">Editar</a> #}
+    </center>
+ </div>  
+   <div class="row ">
+    <div class="col">
+            <a href="{{ path('chat') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Regresar al Chat</a>
+    </div>
 
-    {% if current_user_id == perfil.usuario.id %}
-        <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">Editar</a>
-    {% endif %}
-    
+    <div class="row justify-content">
+        <div class="px-md-5">
+            {% if current_user_id == perfil.usuario.id %}
+                <a href="{{ path('perfil_edit', {'id': perfil.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i>Editar</a>
+            {% endif %}
+        </div>
+    </div>
+ </div>
+
+ </div> 
+ 
+ </div>   
+ </div>   
 {% endblock %}
