@@ -2,12 +2,31 @@
 
 {% block title %}Edit Perfil{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chat/css/jquery.mCustomScrollbar.min.css') }}">
+{% endblock %}
+
 {% block body %}
-    <h1>Edit Perfil</h1>
+<div class="container-fluid h-100">
+    <div class="row justify-content-center h-100">
+        <div class="col-md-8 col-xl-8 chat">
+            <div class="card mb-sm-3 mb-md-3 contacts_card">
+                <center><h1>Editar Perfil</h1></center>
+                    <center>
+                        {{ include('perfil/_form.html.twig') }}
+                    </center>
+    {# Esto comentado pq lleva a la lista de usuarios #}
+    {# <a href="{{ path('perfil_index') }}">back to list</a> #}
 
-    {{ include('perfil/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('perfil_index') }}">back to list</a>
-
-    {{ include('perfil/_delete_form.html.twig') }}
+    {# Y esto pa k no pueda eliminar #}
+    {# {{ include('perfil/_delete_form.html.twig') }} #}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

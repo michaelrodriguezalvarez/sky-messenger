@@ -1,4 +1,15 @@
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/chat/css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chat/css/jquery.mCustomScrollbar.min.css') }}">
+{% endblock %}
+
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_widget(form) }} 
+
+    {# <div class="form-group"> #}
+    <a href="{{ path('chat') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Regresar al Chat</a>
+    <button class="btn btn-primary">{{ button_label|default('') }}<i class="fas fa-save"></i> Guardar</button>
+    {# </div> #}
 {{ form_end(form) }}
