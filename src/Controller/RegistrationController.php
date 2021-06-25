@@ -33,7 +33,9 @@ class RegistrationController extends AbstractController
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+        $form->handleRequest($request);        
+
+        $errors = $form->getErrors(true);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
@@ -68,10 +70,11 @@ class RegistrationController extends AbstractController
 
             $this->addFlash('success', 'Registration success. Please verify your email address.');
             return $this->redirectToRoute('app_login');
-        }
+        }     
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+            'errors' => $errors,
         ]);
     }
 

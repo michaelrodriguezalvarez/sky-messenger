@@ -35,6 +35,16 @@
 
 <div class="limiter">
 
+{% if errors | length > 0 %}
+	<script>
+        Swal.fire({
+			icon: 'error',
+			title: '¡Error!',
+			text: '{{ errors[0].message }}',
+		})
+    </script>
+{% endif%}
+
 
 		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
 			<div class="wrap-login100 p-t-190 p-b-30">
@@ -80,7 +90,7 @@
 
 					<div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
 						{# <input class="input100" type="password" name="pass" placeholder="Contraseña"> #}
-                        {{ form_widget(registrationForm.plainPassword,{'attr': {'class': 'input100 validate-form','placeholder':'Contraseña','type':'password'}}) }}
+                        {{ form_widget(registrationForm.plainPassword.first,{'attr': {'class': 'input100 validate-form','placeholder':'Contraseña','type':'password'}}) }}
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock"></i>
@@ -88,7 +98,8 @@
 					</div>
 
                     <div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
-						<input class="input100" type="password" name="Confirm_pass" placeholder="Confirme su contraseña">
+						{# <input class="input100" type="password" name="pass" placeholder="Contraseña"> #}
+                        {{ form_widget(registrationForm.plainPassword.second,{'attr': {'class': 'input100 validate-form','placeholder':'Confirme su contraseña','type':'password'}}) }}
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock"></i>

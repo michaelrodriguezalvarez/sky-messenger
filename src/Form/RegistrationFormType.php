@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,23 +43,40 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+            ->add('plainPassword', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'invalid_message' => 'Ambas contraseñas deben coincidir.',                
+                'required' => true,
                 'mapped' => false,
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                ],
-            ])
-        ;
+                'first_options' => array(
+                    'label'=>'Clave',
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Usted debe especificar la contraseña',
+                        ]),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
+                            // max length allowed by Symfony for security reasons
+                            'max' => 100,
+                        ]),
+                    ]
+                ),
+                'second_options' => array(
+                    'label'=>'Confirmar clave',                    
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Usted debe especificar la contraseña',
+                        ]),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
+                            // max length allowed by Symfony for security reasons
+                            'max' => 100,
+                        ]),
+                    ]
+                ),
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
