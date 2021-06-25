@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Perfil;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\Constraints\CardScheme;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -44,7 +46,14 @@ class RegistrationController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             $user->setRoles(array('ROLE_USER'));
-            $entityManager->persist($user);
+
+            $perfil = new Perfil();
+            $perfil->setNick($request->request->get("registration_form")["nick"]);
+            $perfil->setSexo($request->request->get("registration_form")["sexo"]);
+            $perfil->setUsuario($user);
+
+            $entityManager->persist($perfil->getUsuario());
+            $entityManager->persist($perfil);
             $entityManager->flush();
 
             // generate a signed url and email it to the user
