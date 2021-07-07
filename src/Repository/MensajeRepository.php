@@ -30,6 +30,19 @@ class MensajeRepository extends ServiceEntityRepository
         ;
     }
 
+    public function getPrivateMessages($id_usuario_seleccionado, $id_usuario_logueado){
+        return $this->createQueryBuilder('m')
+        ->andWhere('m.destinatario = :id_usuario_seleccionado AND m.remitente = :id_usuario_logueado')
+        ->orWhere('m.destinatario = :id_usuario_logueado AND m.remitente = :id_usuario_seleccionado')           
+        ->setParameter('id_usuario_seleccionado', $id_usuario_seleccionado)
+        ->setParameter('id_usuario_logueado', $id_usuario_logueado)
+        ->orderBy('m.fecha', 'ASC')
+        //->setMaxResults(10)
+        ->getQuery()
+        ->getResult()
+    ;
+    }
+
     // /**
     //  * @return Mensaje[] Returns an array of User objects
     //  */

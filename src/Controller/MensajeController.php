@@ -152,35 +152,92 @@ class MensajeController extends AbstractController
      */
     public function getPublicMessages(Request $request, MensajeRepository $mensajeRepository, PerfilRepository $perfilRepository): Response
     {
-
-        $mensajesPublicos = $mensajeRepository->getPublicMessages(); 
-        
-        $mensajes = [];
-
-        foreach ($mensajesPublicos as $mensaje) {
-
-            /** @var Perfil $remitente */
-            $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente()));            
+        try {
+            $mensajesPublicos = $mensajeRepository->getPublicMessages();       
+            $mensajes = [];
 
             /** @var Mensaje $mensaje */
-            array_push($mensajes, [
-                'id'=>$mensaje->getId(), 
-                'destinatario'=>null, 
-                'remitente'=>[
-                    'id_usuario'=>$remitente->getUsuario()->getId(),
-                    'nick'=>$remitente->getNick()
-                ],
-                'texto' => $mensaje->getTexto(),
-                'fecha' => $mensaje->getFecha()
+            foreach ($mensajesPublicos as $mensaje) {
+                /** @var Perfil $remitente */
+                $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente())); 
+                array_push($mensajes, [
+                    'id'=>$mensaje->getId(), 
+                    'destinatario'=>null, 
+                    'remitente'=>[
+                        'id_usuario'=>$remitente->getUsuario()->getId(),
+                        'nick'=>$remitente->getNick()
+                    ],
+                    'texto' => $mensaje->getTexto(),
+                    'fecha' => $mensaje->getFecha()
+                ]);
+            }
+            
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => true,
+                'data' => $mensajes
             ]);
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+
+        } catch (\Throwable $th) {           
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+            ]);
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
         }
-        
-        $response = new JsonResponse();
-        $response->setData([
-            'success' => true,
-            'data' => $mensajes
-        ]);
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+    }
+
+    /**
+     * @Route("/api/getPrivateMessages/{id_usuario_seleccionado}", name="mensaje_index_private", methods={"GET"})
+     */
+    public function getPrivateMessages(Request $request, int $id_usuario_seleccionado, MensajeRepository $mensajeRepository, PerfilRepository $perfilRepository): Response
+    {
+        try {
+            /** @var User $current_user */
+            $current_user = $this->getUser();
+            $mensajesPrivados = $mensajeRepository->getPrivateMessages($id_usuario_seleccionado,$current_user->getId());
+            $mensajes = [];
+
+            /** @var Mensaje $mensaje */
+            foreach ($mensajesPrivados as $mensaje) {
+                /** @var Perfil $remitente */
+                $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente())); 
+                $destinatario = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getDestinatario())); 
+                array_push($mensajes, [
+                    'id'=>$mensaje->getId(), 
+                    'destinatario'=>[
+                        'id_usuario'=>$destinatario->getUsuario()->getId(),
+                        'nick'=>$destinatario->getNick()
+                    ], 
+                    'remitente'=>[
+                        'id_usuario'=>$remitente->getUsuario()->getId(),
+                        'nick'=>$remitente->getNick()
+                    ],
+                    'texto' => $mensaje->getTexto(),
+                    'fecha' => $mensaje->getFecha()
+                ]);
+            }
+            
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => true,
+                'data' => $mensajes
+            ]);
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+
+        } catch (\Throwable $th) {           
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+            ]);
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
     }
 }
