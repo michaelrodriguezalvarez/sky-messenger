@@ -1,0 +1,7 @@
+.msg_nick{
+    position: absolute;
+    left: 0;
+    top: -20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 10px;
+}

@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Entity\Mensaje;
 use App\Form\MensajeType;
 use App\Repository\UserRepository;
-use Exception;
+use App\Repository\MensajeRepository;
+use App\Repository\PerfilRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -144,5 +145,42 @@ class MensajeController extends AbstractController
 
             return $response;
         }
+    }
+
+    /**
+     * @Route("/api/getPublicMessages", name="mensaje_index_public", methods={"GET"})
+     */
+    public function getPublicMessages(Request $request, MensajeRepository $mensajeRepository, PerfilRepository $perfilRepository): Response
+    {
+
+        $mensajesPublicos = $mensajeRepository->getPublicMessages(); 
+        
+        $mensajes = [];
+
+        foreach ($mensajesPublicos as $mensaje) {
+
+            /** @var Perfil $remitente */
+            $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente()));            
+
+            /** @var Mensaje $mensaje */
+            array_push($mensajes, [
+                'id'=>$mensaje->getId(), 
+                'destinatario'=>null, 
+                'remitente'=>[
+                    'id_usuario'=>$remitente->getUsuario()->getId(),
+                    'nick'=>$remitente->getNick()
+                ],
+                'texto' => $mensaje->getTexto(),
+                'fecha' => $mensaje->getFecha()
+            ]);
+        }
+        
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => true,
+            'data' => $mensajes
+        ]);
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
     }
 }
