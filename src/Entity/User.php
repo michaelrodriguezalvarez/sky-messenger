@@ -42,6 +42,13 @@ class User implements UserInterface
      */
     private $isVerified = false;
 
+        /**
+     * @var \DateTime|null
+     *
+     * @ORM\Column(name="last_activity_at", type="datetime", nullable=true)
+     */
+    protected $lastActivityAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,5 +145,23 @@ class User implements UserInterface
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+
+    public function getLastActivityAt(): ?\DateTimeInterface
+    {
+        return $this->lastActivityAt;
+    }
+
+    public function setLastActivityAt(?\DateTimeInterface $lastActivityAt): self
+    {
+        $this->lastActivityAt = $lastActivityAt;
+
+        return $this;
+    }
+
+    public function isActiveNow(): bool
+    {
+        $delay = new \Datetime('2 minutes ago');
+        return ($this->getLastActivityAt() > $delay);
     }
 }
