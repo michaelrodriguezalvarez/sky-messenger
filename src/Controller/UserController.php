@@ -113,11 +113,11 @@ class UserController extends AbstractController
             $perfiles = $perfilRepository->findAll();               
             $users = [];
             // Estableciendo como primer elemento a la sala pública
-            array_push($users, ['id'=>-1, 'nick'=>'Sala publica', 'perfil'=>-1]);
+            array_push($users, ['id'=>-1, 'nick'=>'Sala pública', 'perfil'=>-1, 'roles'=>array('ROLE_SALA_PUBLICA'), 'activo'=>true]);
 
             foreach ($perfiles as $perfil) {
                 //Aquí añadí 'roles'=>$perfil->getUsuario()->getRoles() para que devuevla el rol como parte de los datos.
-                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId(), 'roles'=>$perfil->getUsuario()->getRoles()]);
+                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId(), 'roles'=>$perfil->getUsuario()->getRoles(), 'activo'=>$perfil->getUsuario()->isActiveNow()]);
             }
 
             $response = new JsonResponse();
