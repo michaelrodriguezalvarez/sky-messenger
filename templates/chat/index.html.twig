@@ -27,18 +27,34 @@
         var base_url = ''+'{{ app.request.baseUrl }}'+'';
         var id_destinatario_seleccionado = -1;
         var nick_destinatario_seleccionado = '';
+		var role_destinatario = '';
         var iniciando = true;
 		var mensajes = [];
 		var actualizando_usuarios_logueados = false;
-
 		var scrolled = false;
+		var estado_destinatario_seleccionado = '';
+
+		//Array para mostrar el rol de forma mas legible a los usuarios
+        var roles = [];
+        roles["ROLE_USER"]="Usuario";
+		roles["ROLE_ADMIN"]="Administrador";
+		roles["ROLE_SALA_PUBLICA"]="";
 
 		updateScroll = function(){			
 			if(!scrolled){
 				var element = document.getElementById("scrollMensajes");
-				console.log(element.scrollHeight);	
 				element.scrollTop = element.scrollHeight;	
 			}
+		}
+
+		ActualizarEstadoDestinatarioSeleccionado = function(){
+			usuarios_logueados.map(function(element){
+				if(element.id == id_destinatario_seleccionado){
+					var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
+					$("#icono_estado_usuario_seleccionado").removeClass();
+					$("#icono_estado_usuario_seleccionado").addClass(icono_activo);
+				}
+			});
 		}
 
         ActualizarUsuariosLogueados = function (){
@@ -49,27 +65,25 @@
                     $("#usuarios").empty();
                     if(status == 'success' && data.success == true){
                         usuarios_logueados = data.data;  
-                        usuarios_logueados.map(function (element){                            
-                            //Array para mostrar el rol de forma mas legible a los usuarios
-                            $roles = [];
-                            $roles["ROLE_USER"]="Usuario";
-							$roles["ROLE_ADMIN"]="Administrador";
+                        usuarios_logueados.map(function (element){  
                             if(element.id != -1){ //Si no es la sala publica 
                                 if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
-                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a><span> '+ $roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
+                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
                                     var perfilUrl = base_url+'/perfil/'+element.perfil;
-                                    $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</span></a><p>'+$roles[element.roles]+'</p></div></div></li>');
+									var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
+                                    $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');
                                 }
                             }else{ //La sala publica no require de perfil
-                                $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</a></li>');
-                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img"><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\');">'+element.nick+'</span></a></div></div></li>');
+                                $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
+                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img"><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
                             }                            
                         });
                         if(iniciando == true && usuarios_logueados.length > 0){
-                            EstablecerDestinatario(usuarios_logueados[0].id, usuarios_logueados[0].nick);
+                            EstablecerDestinatario(usuarios_logueados[0].id, usuarios_logueados[0].nick, roles[usuarios_logueados[0].roles]);
                             iniciando = false;
                         }
 						actualizando_usuarios_logueados = false;
+						ActualizarEstadoDestinatarioSeleccionado();
                     }else{
                         usuarios_logueados = [];
                         $("#listado_destinatarios ul").append('<li>Error cargando los elementos :-(</li>');
@@ -188,14 +202,17 @@
 			}
 		}
 
-        EstablecerDestinatario = function (id_destinarario, nick_destinatario){
+        EstablecerDestinatario = function (id_destinarario, nick_destinatario, role_destinatario){
 			if(id_destinarario != id_destinatario_seleccionado){
 				scrolled = false;
 				$("#mensajes").html("");				
 			}           
             id_destinatario_seleccionado = id_destinarario;
             nick_destinatario_seleccionado = nick_destinatario;
+			role_destinatario = role_destinatario;
             $('#destinatario').text(nick_destinatario_seleccionado);
+			$('#role_usuario_seleccionado').text(role_destinatario);
+			ActualizarEstadoDestinatarioSeleccionado();
 			CargarMensajesParaDestinatario(true);
         }
 
@@ -249,39 +266,6 @@
 {% endblock %}
 
 {% block body %}
-<header>
-
-{# <div>Conversación con <b><span id="destinatario">Cargando...</span></b></div>
-<div> 
-<span>Usted ha accedido como <b>{{ perfil.nick }}</b></span>
-<a href="{{ path ('app_logout')}}">(Salir)</a>
-<br />
-<a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">(Mi perfil)</a>
-<br />
-{% if is_granted('ROLE_ADMIN') %}
-    <a target="_blank" href="{{ path ('app_admin') }}">(Administrar)</a>
-{% endif %}
-</div> #}
-</header>
-
-{# <aside>
-    <button type="button" onclick="ActualizarUsuariosLogueados()">Actualizar</button>
-    <div id="listado_destinatarios">
-        <ul>
-            <li>Cargando...</li>
-        </ul>
-    </div>    
-</aside> #}
-
-<article>
-<input type="hidden" id="_token" name="_token" value="{{ csrf_token('enviar_mensaje' ~ perfil.usuario.id) }}">
-{# <input id="texto" type="text" name="texto" placeholder="Escriba el mensaje">
-<button type="submit" onclick="EnviarMensaje()">Enviar</button> #}
-</article>
-
-
-{# PLANTILLA ============================================================================================ #}
-
 <div class="container-fluid h-100">
 			<div class="row justify-content-center h-100">
 				<div class="col-md-4 col-xl-3 chat"><div class="card mb-sm-3 mb-md-0 contacts_card">
@@ -298,73 +282,7 @@
 
                     {# Lista de Usuarios Conectados #}
 					<div class="card-body contacts_body">
-						<ui class="contacts" id="usuarios">
-                            {# <div id="listado_destinatarios">
-                                <ul>
-                                    <li>Cargando...</li>
-                                </ul>
-                             </div>   #}
-						{# <li class="active">
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img">
-									<span class="online_icon"></span>
-								</div>
-								<div class="user_info">
-									<span>Khalid</span>
-									<p>Kalid is online</p>
-								</div>
-							</div>
-						</li> #}
-						{# <li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/31.jpg') }}" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Taherah Big</span>
-									<p>Taherah left 7 mins ago</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/acb990190ca1ddbb9b20db303375bb58.jpg') }}" class="rounded-circle user_img">
-									<span class="online_icon"></span>
-								</div>
-								<div class="user_info">
-									<span>Sami Rafi</span>
-									<p>Sami is online</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/acb990190ca1ddbb9b20db303375bb58.jpg') }}" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Nargis Hawa</span>
-									<p>Nargis left 30 mins ago</p>
-								</div>
-							</div>
-						</li>
-						<li>
-							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/boy-cartoon-3D-model_D.jpg') }}" class="rounded-circle user_img">
-									<span class="online_icon offline"></span>
-								</div>
-								<div class="user_info">
-									<span>Rashid Samim</span>
-									<p>Rashid left 50 mins ago</p>
-								</div>
-							</div>
-						</li> #}
-                        </ui>
+						<ui class="contacts" id="usuarios"></ui>
 					</div>
 					<div class="card-footer"></div>
 				</div></div>
@@ -378,13 +296,13 @@
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
 									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick="">
-									<span class="online_icon"></span>
+									<span class="offline_icon" id="icono_estado_usuario_seleccionado"></span>
 								</div>
 								<div class="user_info">
                                     
 									<span id="destinatario">Cargando</span>
                                     <!-- La siguiente linea se requiere que se compruebe el estado del usuario-->
-									<p>En línea</p>
+									<p id="role_usuario_seleccionado">Cargando</p>
 								</div>
 								<div class="video_cam">
 									<span><i class="fas fa-video"></i></span>
@@ -419,7 +337,8 @@
                                 {# TextEdit para enviar mensajes #}
                                 <input id="texto" type="text" name="texto" class="form-control type_msg" placeholder="Escriba el mensaje">
 
-								
+								<input type="hidden" id="_token" name="_token" value="{{ csrf_token('enviar_mensaje' ~ perfil.usuario.id) }}">
+
 								<div class="input-group-append">
                                 <button type="submit" onclick="EnviarMensaje()" class="input-group-text send_btn"><i class="fas fa-location-arrow"></i> </button>
 									
@@ -430,5 +349,4 @@
 				</div>
 			</div>
 		</div>
-
 {% endblock %}

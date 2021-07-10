@@ -5,3 +5,14 @@
     color: rgba(255,255,255,0.5);
     font-size: 10px;
 }
+
+.offline_icon{
+    position: absolute;
+    height: 15px;
+    width:15px;
+    background-color: #e61717;
+    border-radius: 50%;
+    bottom: 0.2em;
+    right: 0.4em;
+    border:1.5px solid white;
+}

@@ -22,13 +22,6 @@ class Actividad
     private $id;
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="last_activity_at", type="datetime", nullable=true)
-     */
-    private $lastActivityAt;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="estado", type="string", length=255, nullable=false)
@@ -48,18 +41,6 @@ class Actividad
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getLastActivityAt(): ?\DateTimeInterface
-    {
-        return $this->lastActivityAt;
-    }
-
-    public function setLastActivityAt(?\DateTimeInterface $lastActivityAt): self
-    {
-        $this->lastActivityAt = $lastActivityAt;
-
-        return $this;
     }
 
     public function getEstado(): ?string
