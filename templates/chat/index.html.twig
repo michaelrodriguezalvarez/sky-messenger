@@ -70,8 +70,9 @@
                                 if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
                                     $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
                                     var perfilUrl = base_url+'/perfil/'+element.perfil;
+									var avatar="{{ asset('uploads/') }}"+element.nick+".jpg";
 									var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
-									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
+									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="'+avatar+'" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
