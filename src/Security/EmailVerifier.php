@@ -2,6 +2,9 @@
 
 namespace App\Security;
 
+use App\Entity\Perfil;
+use App\Entity\User;
+use App\Repository\PerfilRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +28,7 @@ class EmailVerifier
 
     public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
     {
+        /**@var User $user */
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             $verifyEmailRouteName,
             $user->getId(),
@@ -32,10 +36,14 @@ class EmailVerifier
             ['id' => $user->getId()]
         );
 
+        /**@var Perfil $perfil */
+        $perfil = $this->entityManager->getRepository(Perfil::class)->findOneBy(array('usuario'=>$user->getId()));
+
         $context = $email->getContext();
         $context['signedUrl'] = $signatureComponents->getSignedUrl();
         $context['expiresAtMessageKey'] = $signatureComponents->getExpirationMessageKey();
         $context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
+        $context['nick'] = $perfil->getNick();
 
         $email->context($context);
 
