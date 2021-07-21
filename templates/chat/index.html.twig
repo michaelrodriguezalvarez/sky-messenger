@@ -76,7 +76,7 @@
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
-                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img"><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
+                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('uploads/sky_messenger.jpg') }}" class="rounded-circle user_img"></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
                             }                            
                         });
                         if(iniciando == true && usuarios_logueados.length > 0){
@@ -130,13 +130,15 @@
 										content += '<span class="msg_time_send">'+mensaje.fecha.date+'</span>';
 										content += '</div>';
 										content += '<div class="img_cont_msg">';
-										content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';								
+										var avatar="{{ asset('uploads/') }}"+mensaje.remitente.nick+".jpg";
+										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';								
 										content += '</div>';
 										content += '</div>';
 									}else{
 									    content = '<div class="d-flex justify-content-start mb-5">';
 									    content += '<div class="img_cont_msg">';
-										content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';
+										var avatar="{{ asset('uploads/') }}"+mensaje.remitente.nick+".jpg";
+										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';
 										content += '</div>';
 										content += '<div class="msg_cotainer">';
 										content += '<span class="msg_nick">'+mensaje.remitente.nick+'</span>';							
@@ -175,13 +177,17 @@
 										content += '<span class="msg_time_send">'+mensaje.fecha.date+'</span>';
 										content += '</div>';
 										content += '<div class="img_cont_msg">';
-										content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';								
+										var avatar="{{ asset('uploads/') }}"+'{{ perfil.nick }}'+".jpg";
+										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';
+										{# content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';								 #}
 										content += '</div>';
 										content += '</div>';
 									}else{
 									    content = '<div class="d-flex justify-content-start mb-5">';
 									    content += '<div class="img_cont_msg">';
-										content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';
+										var avatar="{{ asset('uploads/') }}"+mensaje.remitente.nick+".jpg";
+										
+										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';
 										content += '</div>';
 										content += '<div class="msg_cotainer">';
 										content += '<span class="msg_nick">'+mensaje.remitente.nick+'</span>';							
@@ -296,7 +302,8 @@
 						<div class="card-header msg_head">
 							<div class="d-flex bd-highlight">
 								<div class="img_cont">
-									<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick="">
+								
+									<img src="{{ asset('uploads/') }}{{ perfil.nick }}.jpg" class="rounded-circle user_img" onclick="">
 									<span class="offline_icon" id="icono_estado_usuario_seleccionado"></span>
 								</div>
 								<div class="user_info">
