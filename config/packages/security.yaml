@@ -14,7 +14,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        main:            
             anonymous: true
             lazy: true
             provider: app_user_provider
@@ -25,6 +25,10 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 target: app_login
+
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2592000 # 30 days in seconds
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -39,10 +43,10 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/login, roles: IS_ANONYMOUS }
         - { path: ^/register, roles: IS_ANONYMOUS }
-        - { path: ^/chat, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/mensaje/api/send, roles: IS_AUTHENTICATED_FULLY, methods: [POST] }
-        - { path: ^/user/api/get_logued_users, roles: IS_AUTHENTICATED_FULLY, methods: [GET] }
-        - { path: ^/perfil/\d+$, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/perfil/\d+/edit, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/chat, roles: [IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED] }
+        - { path: ^/mensaje/api/send, roles: [IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED], methods: [POST] }
+        - { path: ^/user/api/get_logued_users, roles: [IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED], methods: [GET] }
+        - { path: ^/perfil/\d+$, roles: [IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED] }
+        - { path: ^/perfil/\d+/edit, roles: [IS_AUTHENTICATED_FULLY, IS_AUTHENTICATED_REMEMBERED] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 

@@ -43,7 +43,18 @@ class MensajeRepository extends ServiceEntityRepository
     ;
     }
 
-    // /**
+    public function getUnreadMessages($id_remitente, $id_destinatario){
+        return count($this->createQueryBuilder('m')
+        ->andWhere('m.remitente = :id_remitente')
+        ->andWhere('m.destinatario = :id_destinatario') 
+        ->andWhere('m.leido = 0')           
+        ->setParameter('id_remitente', $id_remitente)
+        ->setParameter('id_destinatario', $id_destinatario)
+        ->getQuery()
+        ->getResult())
+        ;
+    }
+
     //  * @return Mensaje[] Returns an array of User objects
     //  */
     /*

@@ -36,14 +36,11 @@ class Mensaje
     private $fecha;
 
     /**
-     * @var \User
+     * @var binary
      *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="destinatario", referencedColumnName="id")
-     * })
+     * @ORM\Column(name="leido", type="binary", nullable=false)
      */
-    private $destinatario;
+    private $leido = '0';
 
     /**
      * @var \User
@@ -54,6 +51,16 @@ class Mensaje
      * })
      */
     private $remitente;
+
+    /**
+     * @var \User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="destinatario", referencedColumnName="id")
+     * })
+     */
+    private $destinatario;
 
     public function getId(): ?int
     {
@@ -84,14 +91,15 @@ class Mensaje
         return $this;
     }
 
-    public function getDestinatario(): ?User
+    public function getLeido()
     {
-        return $this->destinatario;
+        return ($this->leido == '0') ? false : true;
     }
 
-    public function setDestinatario(?User $destinatario): self
+    public function setLeido(bool $leido): self
     {
-        $this->destinatario = $destinatario;
+
+        $this->leido = ($leido == true) ? '1': '0';
 
         return $this;
     }
@@ -104,6 +112,18 @@ class Mensaje
     public function setRemitente(?User $remitente): self
     {
         $this->remitente = $remitente;
+
+        return $this;
+    }
+
+    public function getDestinatario(): ?User
+    {
+        return $this->destinatario;
+    }
+
+    public function setDestinatario(?User $destinatario): self
+    {
+        $this->destinatario = $destinatario;
 
         return $this;
     }

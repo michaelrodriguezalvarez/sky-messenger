@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configurar{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animate/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
+
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="limiter">
+
+{% if errors | length > 0 %}
+	<script>
+        Swal.fire({
+			icon: 'error',
+			title: '¡Error!',
+			text: '{{ errors[0].message }}',
+		})
+    </script>
+{% endif%}
+
+     {% for flashSuccess in app.flashes('success') %}
+	 <script>
+        Swal.fire({
+			icon: 'info',
+			title: 'Información',
+			text: '{{flashSuccess}}',			
+			})
+        </script>
+
+        {# <div class="alert alert-info" role="alert">{{ flashSuccess }}</div> #}
+    {% endfor %}
+
+		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
+			<div class="wrap-login100">
+			{{ form_start(form, {'attr': {'class': 'login100-form validate-form'}}) }}
+                     <div class="text-center w-full">	
+                        <p class="txt1">CONFIGURACION</p>
+                        <br />
+					</div>
+                    <div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
+						{{ form_widget(form.password.first,{'attr': {'class': 'input100 validate-form','placeholder':'Clave nueva','type':'password'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock"></i>
+						</span>
+					</div>
+                    <div class="wrap-input100 validate-input m-b-10" data-validate = "Password is required">
+						{{ form_widget(form.password.second,{'attr': {'class': 'input100 validate-form','placeholder':'Repita nueva clave','type':'password'}}) }}
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock"></i>
+						</span>
+					</div>
+					<div class="text-center w-full mt-2">
+						<span class="txt1">
+                        <i class="fa fa-hand-pointer-o"></i>	
+							{{ form_help(form.password, {
+								'help_attr': {'class': 'txt1'}
+							}) }}												
+						</span>
+					</div>
+
+                    <div class="container-login100-form-btn p-t-10">
+						<label class="txt2">
+							{{ form_widget(form.aviso) }}
+							<label for="aviso" class="txt1">Avisar llegada de mensajes nuevos</label> 
+            			</label>
+					</div>
+                   
+					<div class="container-login100-form-btn p-t-10">
+						<button class="login100-form-btn" type="submit">
+							Guardar
+						</button>
+					</div>	
+
+                    <div class="text-center w-full mt-2">
+						<a class="txt1" href="{{ path('chat')}}">
+                        <i class="fa fa-long-arrow-left"></i>	
+							Regresar al chat												
+						</a>
+					</div>		
+
+			{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+
+
+
+
+{# <div>
+    <span>Don't have an account? </span><a href="{{ path('app_register')}}">Register</a>
+</div> #}
+
+
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

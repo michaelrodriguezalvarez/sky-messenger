@@ -71,7 +71,7 @@
                                     $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
                                     var perfilUrl = base_url+'/perfil/'+element.perfil;
 									var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
-                                    $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');
+									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
@@ -155,8 +155,8 @@
                         }
                     );
 			}else{
-				var path_mensaje_index_private = "{{path('mensaje_index_private', {'id_usuario_seleccionado':9999999999})}}";
-				var path_mensaje_index_private = path_mensaje_index_private.replace("9999999999", id_destinatario_seleccionado);
+				var path_mensaje_index_private = "{{path('mensaje_index_private', {'id_usuario_seleccionado':'parametro_id_usuario_seleccionado'})}}";
+				var path_mensaje_index_private = path_mensaje_index_private.replace("parametro_id_usuario_seleccionado", id_destinatario_seleccionado);
 				$.get(
 						path_mensaje_index_private, 
                         function(data, status){
@@ -317,7 +317,7 @@
                                     {% if is_granted('ROLE_ADMIN') %}
 									<li><i class="fas fa-lock"></i> <a target="_blank" href="{{ path ('app_admin') }}">Administración</a></li>
                                     {% endif %}
-
+									<li><i class="fas fa-cog"></i><a href="{{ path ('configuracion')}}">Configurar</a></li>
 									<li><i class="fas fa-times"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
 									{# <li><i class="fas fa-ban"></i> Block</li> #}
 								</ul>

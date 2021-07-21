@@ -240,4 +240,35 @@ class MensajeController extends AbstractController
             return $response;
         }
     }
+
+    /**
+     * @Route("/api/mensaje/no_leidos/{id_remitente}", name="mensaje_no_leido_cantidad", methods={"GET"})
+     */
+    public function getCountUnreadMessages(Request $request, int $id_remitente, MensajeRepository $mensajeRepository): Response
+    {       
+        try {           
+                /**@var User $current_user */
+                $current_user = $this->getUser();                   
+                $cantidad = $mensajeRepository->getUnreadMessages($current_user, $id_remitente);
+                $response = new JsonResponse();
+                $response->setData([
+                    'success' => true,
+                    'data' => $cantidad
+                ]);
+                $response->setStatusCode(Response::HTTP_OK);
+        
+                return $response;    
+
+        } catch (\Throwable $th) {           
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+            ]);
+
+            $response->setStatusCode(Response::HTTP_OK);
+
+            return $response;
+        }
+    }
 }
