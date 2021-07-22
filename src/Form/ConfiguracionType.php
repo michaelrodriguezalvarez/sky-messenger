@@ -2,17 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\User;
-use App\EventSubscriber\RepeatPasswordSubscriber;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Configuracion;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class ConfiguracionType extends AbstractType
 {    
@@ -28,10 +24,9 @@ class ConfiguracionType extends AbstractType
                 'first_options' => array('label'=>'Clave nueva'),
                 'second_options' => array('label'=>'Confirmar clave nueva'),
             ))
-            ->add('aviso', CheckboxType::class, array(
+            ->add('avisar', CheckboxType::class, array(
                 'label' => false,
                 'required' => false,
-                'mapped'=> false
             ))
             ;
     }
@@ -39,7 +34,7 @@ class ConfiguracionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => Configuracion::class,
         ]);
     }
 }

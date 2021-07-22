@@ -2,16 +2,22 @@
 
 namespace App\Controller;
 
+use App\Entity\Configuracion;
 use App\Entity\Mensaje;
+use App\Entity\Perfil;
 use App\Form\MensajeType;
 use App\Repository\UserRepository;
 use App\Repository\MensajeRepository;
 use App\Repository\PerfilRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -103,7 +109,7 @@ class MensajeController extends AbstractController
     /**
      * @Route("/api/send", name="mensaje_enviar", methods={"POST"})
      */
-    public function send(Request $request, UserRepository $userRepository): Response
+    public function send(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
     {
         try {
             if($_POST){                
@@ -118,6 +124,8 @@ class MensajeController extends AbstractController
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($mensaje);
                     $entityManager->flush();
+
+                    $this->AvisarCorreoMensajesNuevos($mensaje,(new TemplatedEmail()),$mailer, $entityManager);
         
                     $response = new JsonResponse();
                     $response->setData([
@@ -270,5 +278,36 @@ class MensajeController extends AbstractController
 
             return $response;
         }
+    }
+
+    private function AvisarCorreoMensajesNuevos(Mensaje $mensaje, TemplatedEmail $email, MailerInterface $mailer, EntityManagerInterface $entityManager): void
+    {
+        if($mensaje->getDestinatario() != null){
+            if($mensaje->getDestinatario()->isActiveNow() == false){
+                $configuracion = $entityManager->getRepository(Configuracion::class)
+                                    ->findOneBy(array("usuario"=>$mensaje->getDestinatario())); 
+                if($configuracion->getAvisar() == true){
+                    /**@var Perfil $perfil_remitente */
+                    $perfil_remitente = $entityManager->getRepository(Perfil::class)
+                                    ->findOneBy(array("usuario"=>$mensaje->getRemitente()));
+                    /**@var Perfil $perfil_destinatario */
+                    $perfil_destinatario = $entityManager->getRepository(Perfil::class)
+                                    ->findOneBy(array("usuario"=>$mensaje->getDestinatario()));
+                    $context = $email->getContext();
+                    $context['nick'] = $perfil_destinatario->getNick();
+                    $context['remitente'] = $perfil_remitente->getNick();
+                    $context['contenido'] = $mensaje->getTexto();        
+                    $email->context($context);        
+                    $mailer
+                        ->send(
+                        $email
+                        ->from(new Address('sky@localhost.com', 'Sky Messenger'))
+                        ->to($mensaje->getDestinatario()->getEmail())
+                        ->subject('Aviso de llegada de mensaje nuevo')
+                        ->htmlTemplate('mensaje/aviso_mensajes.html.twig')
+                    );
+                }  
+            }
+        }      
     }
 }
