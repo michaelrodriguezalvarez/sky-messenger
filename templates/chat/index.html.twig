@@ -27,6 +27,7 @@
         var base_url = ''+'{{ app.request.baseUrl }}'+'';
         var id_destinatario_seleccionado = -1;
         var nick_destinatario_seleccionado = '';
+		var avatar_destinatario_seleccionado = "{{ asset('images/default.png') }}";
 		var role_destinatario = '';
         var iniciando = true;
 		var mensajes = [];
@@ -57,6 +58,24 @@
 			});
 		}
 
+		ActualizarAvatarDestinatarioSeleccionado = function(){
+			usuarios_logueados.map(function(element){
+				if(element.id == id_destinatario_seleccionado){
+					if(element.id == -1){
+						avatar_destinatario_seleccionado = "{{ asset('images/') }}"+element.avatar;
+					}else{
+						if(element.avatar != null){
+							avatar_destinatario_seleccionado = "{{ asset('uploads/') }}"+element.avatar;
+						}else{
+							avatar_destinatario_seleccionado = "{{ asset('images/default.png') }}";							
+						}
+					}
+				}
+			});
+
+			$("#foto_avatar").attr('src', avatar_destinatario_seleccionado);
+		}
+
         ActualizarUsuariosLogueados = function (){
 			if(actualizando_usuarios_logueados == false){
 				actualizando_usuarios_logueados = true;
@@ -71,17 +90,16 @@
                                 if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
                                     $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
                                     var perfilUrl = base_url+'/perfil/'+element.perfil;
-									if(element.avatar==null){
-										var avatar="{{ asset('uploads/default.png') }}"
-										}else{
-									var avatar="{{ asset('uploads/') }}"+element.avatar;
-									};
+									var avatar="{{ asset('images/default.png') }}";
+									if(element.avatar!=null){
+										avatar="{{ asset('uploads/') }}"+element.avatar;
+									}
 									var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
 									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="'+avatar+'" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
                                 }
                             }else{ //La sala publica no require de perfil
                                 $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
-                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('uploads/') }}'+element.avatar+'" class="rounded-circle user_img"></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
+                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('images/') }}'+element.avatar+'" class="rounded-circle user_img"></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
                             }                            
                         });
                         if(iniciando == true && usuarios_logueados.length > 0){
@@ -135,10 +153,11 @@
 										content += '<span class="msg_time_send">'+mensaje.fecha.date+'</span>';
 										content += '</div>';
 										content += '<div class="img_cont_msg">';
+										var avatar="";
 										if('{{ perfil.avatar }}'==''){
-											var avatar="{{ asset('uploads/default.png') }}";
+											avatar="{{ asset('images/default.png') }}";
 										}else{
-										var avatar="{{ asset('uploads/') }}"+'{{ perfil.avatar }}';
+											avatar="{{ asset('uploads/') }}"+'{{ perfil.avatar }}';
 										};
 										
 										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';								
@@ -147,10 +166,12 @@
 									}else{
 									    content = '<div class="d-flex justify-content-start mb-5">';
 									    content += '<div class="img_cont_msg">';
+										var avatar="";
+										console.log(mensaje.remitente.avatar);
 										if(mensaje.remitente.avatar==null){
-											var avatar="{{ asset('uploads/default.png') }}";
+											avatar="{{ asset('images/default.png') }}";
 											} else {
-										var avatar="{{ asset('uploads/') }}"+mensaje.remitente.avatar;
+											avatar="{{ asset('uploads/') }}"+mensaje.remitente.avatar;
 										};
 										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';
 										content += '</div>';
@@ -191,23 +212,25 @@
 										content += '<span class="msg_time_send">'+mensaje.fecha.date+'</span>';
 										content += '</div>';
 										content += '<div class="img_cont_msg">';
+										var avatar="";
 										if('{{ perfil.avatar }}'==''){
-											var avatar="{{ asset('uploads/default.png') }}";
+											avatar="{{ asset('images/default.png') }}";
 										}else{
-										var avatar="{{ asset('uploads/') }}"+'{{ perfil.avatar }}';
+											avatar="{{ asset('uploads/') }}"+'{{ perfil.avatar }}';
 										};
 										content += '<img src="'+avatar+'" class="rounded-circle user_img_msg">';
-										{# content += '<img src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img_msg">';								 #}
+										
 										content += '</div>';
 										content += '</div>';
 									}else{
 									    content = '<div class="d-flex justify-content-start mb-5">';
 									    content += '<div class="img_cont_msg">';
 
+										var avatar="";
 										if(mensaje.remitente.avatar==null){
-											var avatar="{{ asset('uploads/default.png') }}";	
+											avatar="{{ asset('images/default.png') }}";	
 										}else{
-										var avatar="{{ asset('uploads/') }}"+mensaje.remitente.avatar;
+											avatar="{{ asset('uploads/') }}"+mensaje.remitente.avatar;
 										};
 
 										
@@ -243,6 +266,7 @@
 			role_destinatario = role_destinatario;
             $('#destinatario').text(nick_destinatario_seleccionado);
 			$('#role_usuario_seleccionado').text(role_destinatario);
+			ActualizarAvatarDestinatarioSeleccionado();
 			ActualizarEstadoDestinatarioSeleccionado();
 			CargarMensajesParaDestinatario(true);
         }
@@ -322,15 +346,11 @@
 				<div class="col-md-8 col-xl-6 chat">
 					<div class="card">
 
-                            {# Cabecera del Panel Principal #}
+                        {# Cabecera del Panel Principal #}
 						<div class="card-header msg_head">
 							<div class="d-flex bd-highlight">
-								<div class="img_cont">
-									{% if perfil.avatar is empty %}
-										<img src="{{ asset('uploads/default.png') }}" class="rounded-circle user_img" onclick="">
-									{% else %}
-										<img src="{{ asset('uploads/') }}{{ perfil.avatar }}" class="rounded-circle user_img" onclick="">
-									{% endif %}
+								<div class="img_cont">									
+									<img id="foto_avatar" src="{{ asset('images/default.png') }}" class="rounded-circle user_img">									
 									<span class="offline_icon" id="icono_estado_usuario_seleccionado"></span>
 								</div>
 								<div class="user_info">
@@ -347,14 +367,22 @@
 							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
 							<div class="action_menu">
 								<ul>
-									<li><i class="fas fa-user-circle"></i> <a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi Perfil</a></li>
+									<li>
+										<p style="text-align:center;">
+											{% if perfil.avatar == null %}
+											<img src="{{ asset('images/default.png') }}" class="rounded-circle user_img">
+											{% else %}
+											<img src="{{ asset('uploads/' ~ perfil.avatar) }}" class="rounded-circle user_img">
+											{% endif %}
+										</p>
+									</li>
+									<li><i class="fas fa-user-circle"></i> <a target="_self" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi Perfil</a></li>
 
                                     {% if is_granted('ROLE_ADMIN') %}
-									<li><i class="fas fa-lock"></i> <a target="_blank" href="{{ path ('app_admin') }}">Administración</a></li>
+									<li><i class="fas fa-lock"></i> <a target="_self" href="{{ path ('app_admin') }}">Administración</a></li>
                                     {% endif %}
 									<li><i class="fas fa-cog"></i><a href="{{ path ('configuracion')}}">Configurar</a></li>
 									<li><i class="fas fa-times"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
-									{# <li><i class="fas fa-ban"></i> Block</li> #}
 								</ul>
 							</div>
 						</div>

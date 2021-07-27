@@ -86,14 +86,10 @@ class PerfilController extends AbstractController
             $avatarFile = $form->get('avatar')->getData();
 
             if ($avatarFile) {
-                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                // $newFilename = $form->get('nick')->getData() . '.' . $avatarFile->guessExtension();
+                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);               
+                $safeFilename = $slugger->slug($originalFilename);               
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
 
-
-                // Move the file to the directory where brochures are stored
                 try {
                     $avatarFile->move(
                         $this->getParameter('uploads_directory'),
@@ -103,29 +99,19 @@ class PerfilController extends AbstractController
                     // ... handle exception if something happens during file upload
                 }
 
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-
-                $Path = $this->getParameter('uploads_directory') . "/" . $perfil->getAvatar();;
-
-                var_dump($Path);
-                if (file_exists($Path)) {
-                    if (unlink($Path)) {
-                        echo "success";
-                    } else {
-                        echo "fail";
+                $Path = $this->getParameter('uploads_directory') . "/" . $perfil->getAvatar();
+                if ($perfil->getAvatar() != null){
+                    if (file_exists($Path)){
+                        unlink($Path);
                     }
-                } else {
-                    echo "file does not exist";
-                };
-
+                }
                 $perfil->setAvatar($newFilename);
             }
 
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('perfil_index');
+            return $this->redirectToRoute('perfil_show', array('id'=>$perfil->getId()));
         }
 
         return $this->render('perfil/edit.html.twig', [
