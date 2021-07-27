@@ -1,0 +1,72 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Administración{% endblock %}
+
+{% block body %}
+
+{{ parent() }}
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Mostrar Usuario</h1>
+                </div>
+            </div>
+
+            <div>
+                <table class="table">
+                    <tbody>                       
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ user_mostrar.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Roles</th>
+                            <td>{{ user_mostrar.roles[0] == "ROLE_ADMIN" ? 'Administrador' : 'Usuario' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Verificado</th>
+                            <td>{{ user_mostrar.isVerified == '1' ? '<i class="fa fa-check-circle-o fa-fw"></i>' : '<i class="fa fa-circle-o fa-fw"></i>'}}</td>
+                        </tr>
+                        <tr>
+                            <th>Nick</th>
+                            <td>{{ perfil_mostrar.nick }}</td>
+                        </tr>
+                        <tr>
+                            <th>Nombre y Apellidos</th>
+                            <td>{{ perfil_mostrar.nombre }} {{ perfil_mostrar.apellidos }}</td>
+                        </tr>  
+                        <tr>
+                            <th>Dirección</th>
+                            <td>{{ perfil_mostrar.direccion }}</td>
+                        </tr>   
+                        <tr>
+                            <th>Teléfono</th>
+                            <td>{{ perfil_mostrar.telefono }}</td>
+                        </tr>
+                        <tr>
+                            <th>Sexo</th>
+                            <td>{{ perfil_mostrar.sexo == 'Masculino' ? '<i class="fa fa-mars fa-fw"></i>' : '<i class="fa fa-venus fa-fw"></i>' }}</td>
+                        </tr> 
+                        <tr>
+                            <th>Descripción</th>
+                            <td>{{ perfil_mostrar.descripcion }}</td>
+                        </tr>
+                        <tr>
+                            <th>Estado</th>
+                            <td>{{ actividad_mostrar.estado == '1' ? '<i class="fa fa-unlock fa-fw"></i>' : '<i class="fa fa-lock fa-fw"></i>' }}</td>
+                        </tr>
+                        <tr>
+                            <th>En línea</th>
+                            <td>{{ user_mostrar.isActiveNow() == '1' ? 'Si' : 'No' }}</td>
+                        </tr>                       
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

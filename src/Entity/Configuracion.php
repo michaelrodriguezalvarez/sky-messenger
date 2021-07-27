@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ActividadRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Actividad
+ * Configuracion
  *
- * @ORM\Table(name="actividad", indexes={@ORM\Index(name="fk_usuario_actividad", columns={"usuario"})})
- * @ORM\Entity(repositoryClass=ActividadRepository::class)
+ * @ORM\Table(name="configuracion", indexes={@ORM\Index(name="fk_configuracion_usuario", columns={"usuario"})})
+ * @ORM\Entity
  */
-class Actividad
+class Configuracion
 {
     /**
      * @var int
@@ -25,9 +24,9 @@ class Actividad
     /**
      * @var bool
      *
-     * @ORM\Column(name="estado", type="boolean", nullable=false)
+     * @ORM\Column(name="avisar", type="boolean", nullable=false)
      */
-    private $estado;
+    private $avisar;
 
     /**
      * @var \User
@@ -44,14 +43,14 @@ class Actividad
         return $this->id;
     }
 
-    public function getEstado(): ?bool
+    public function getAvisar(): ?bool
     {
-        return $this->estado;
+        return $this->avisar;
     }
 
-    public function setEstado(bool $estado): self
+    public function setAvisar(bool $avisar): self
     {
-        $this->estado = $estado;
+        $this->avisar = $avisar;
 
         return $this;
     }

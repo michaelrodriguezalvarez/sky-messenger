@@ -34,6 +34,7 @@
 		var actualizando_usuarios_logueados = false;
 		var scrolled = false;
 		var estado_destinatario_seleccionado = '';
+		var buscando = false;
 
 		//Array para mostrar el rol de forma mas legible a los usuarios
         var roles = [];
@@ -77,44 +78,47 @@
 		}
 
         ActualizarUsuariosLogueados = function (){
-			if(actualizando_usuarios_logueados == false){
-				actualizando_usuarios_logueados = true;
-                $.get("{{path('get_logued_users')}}", function(data, status){
-                    $("#listado_destinatarios ul").empty();
-                    $("#usuarios").empty();
-                    if(status == 'success' && data.success == true){
-                        usuarios_logueados = data.data;  
-                        usuarios_logueados.map(function (element){ 
-							
-                            if(element.id != -1){ //Si no es la sala publica 
-                                if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
-                                    $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
-                                    var perfilUrl = base_url+'/perfil/'+element.perfil;
-									var avatar="{{ asset('images/default.png') }}";
-									if(element.avatar!=null){
-										avatar="{{ asset('uploads/') }}"+element.avatar;
+
+			if(buscando == false){
+				if(actualizando_usuarios_logueados == false){
+					actualizando_usuarios_logueados = true;
+					$.get("{{path('get_logued_users')}}", function(data, status){
+						$("#listado_destinatarios ul").empty();
+						$("#usuarios").empty();
+						if(status == 'success' && data.success == true){
+							usuarios_logueados = data.data;  
+							usuarios_logueados.map(function (element){  
+								if(element.id != -1){ //Si no es la sala publica 
+									if(element.id != '{{ perfil.usuario.id }}'){ //Si no es el usuario logueado
+										$("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\',\''+ roles[element.roles]+'\');">'+element.nick+'</a><span> '+ roles[element.roles]+' </span><a target="_self" href="'+base_url+'/perfil/'+element.perfil+'">(Ver perfil)</a></li>');
+										var perfilUrl = base_url+'/perfil/'+element.perfil;
+                    var avatar="{{ asset('images/default.png') }}";
+                    if(element.avatar!=null){
+                      avatar="{{ asset('uploads/') }}"+element.avatar;
+                    }
+										var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
+										$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="'+avatar+'" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
 									}
-									var icono_activo = (element.activo == true) ? 'online_icon': 'offline_icon';
-									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="'+avatar+'" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a><p>'+roles[element.roles]+'</p></div></div></li>');	
-                                }
-                            }else{ //La sala publica no require de perfil
-                                $("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
-                                $("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('images/') }}'+element.avatar+'" class="rounded-circle user_img"></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
-                            }                            
-                        });
-                        if(iniciando == true && usuarios_logueados.length > 0){
-                            EstablecerDestinatario(usuarios_logueados[0].id, usuarios_logueados[0].nick, roles[usuarios_logueados[0].roles]);
-                            iniciando = false;
-                        }
-						actualizando_usuarios_logueados = false;
-						ActualizarEstadoDestinatarioSeleccionado();
-                    }else{
-                        usuarios_logueados = [];
-                        $("#listado_destinatarios ul").append('<li>Error cargando los elementos :-(</li>');
-                        $('#destinatario').text('Error cargando el elemento :-(');
-						actualizando_usuarios_logueados = false;
-                    }             
-                });  
+								}else{ //La sala publica no require de perfil
+									$("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+ roles[element.roles]+'\');">'+element.nick+'</a></li>');
+									$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img src="{{ asset('images/') }}'+element.avatar+'" class="rounded-circle user_img"><span class="online_icon"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+element.id+',\''+element.nick+'\', \''+roles[element.roles]+'\');">'+element.nick+'</span></a></div></div></li>');
+								}                            
+							});
+							if(iniciando == true && usuarios_logueados.length > 0){
+								EstablecerDestinatario(usuarios_logueados[0].id, usuarios_logueados[0].nick, roles[usuarios_logueados[0].roles]);
+								iniciando = false;
+							}
+							actualizando_usuarios_logueados = false;
+							ActualizarEstadoDestinatarioSeleccionado();
+						}else{
+							usuarios_logueados = [];
+							$("#listado_destinatarios ul").append('<li>Error cargando los elementos :-(</li>');
+							$('#destinatario').text('Error cargando el elemento :-(');
+							actualizando_usuarios_logueados = false;
+						}             
+					});  
+				}
+
 			}			
         };
 
@@ -194,7 +198,7 @@
                     );
 			}else{
 				var path_mensaje_index_private = "{{path('mensaje_index_private', {'id_usuario_seleccionado':'parametro_id_usuario_seleccionado'})}}";
-				var path_mensaje_index_private = path_mensaje_index_private.replace("parametro_id_usuario_seleccionado", id_destinatario_seleccionado);
+				path_mensaje_index_private = path_mensaje_index_private.replace("parametro_id_usuario_seleccionado", id_destinatario_seleccionado);
 				$.get(
 						path_mensaje_index_private, 
                         function(data, status){
@@ -315,6 +319,40 @@
 			$('#scrollMensajes').on('scroll', function (){
 				scrolled = true;
 			});
+
+			$('#buscador').val("");
+
+			$('#buscador').keyup(function(event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+				
+				var criterio_busqueda = $('#buscador').val();				
+
+				if(criterio_busqueda == ""){
+					buscando = false;
+					$("#listado_destinatarios ul").empty();
+					ActualizarUsuariosLogueados();
+				}else{
+					buscando = true;
+					$("#listado_destinatarios ul").empty();
+                    $("#usuarios").empty();
+				
+					for(indice in usuarios_logueados){
+						var item = usuarios_logueados[indice];
+						var nombre = item.nick;
+						if(criterio_busqueda.length != 0 && nombre.length != 0){
+							if(nombre.toLowerCase().search(criterio_busqueda.toLowerCase()) != -1){
+								if(item.id != -1 && item.id != '{{ perfil.usuario.id }}'){
+								var icono_activo = (item.activo == true) ? 'online_icon': 'offline_icon';
+								$("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+item.id+',\''+item.nick+'\',\''+ roles[item.roles]+'\');">'+item.nick+'</a><span> '+ roles[item.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+item.perfil+'">(Ver perfil)</a></li>');
+								var perfilUrl = base_url+'/perfil/'+item.perfil;
+								var icono_activo = (item.activo == true) ? 'online_icon': 'offline_icon';
+								$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+item.id+',\''+item.nick+'\', \''+roles[item.roles]+'\');">'+item.nick+'</span></a><p>'+roles[item.roles]+'</p></div></div></li>');
+								};
+							};
+						};
+					};
+				}
+            });
         });
         
     </script>
@@ -328,7 +366,7 @@
                     {# Buscar #}
 					<div class="card-header">        
 						<div class="input-group">
-							<input type="text" placeholder="Buscar..." name="" class="form-control search">
+							<input id="buscador" type="text" placeholder="Buscar..." name="" class="form-control search">
 							<div class="input-group-prepend">
 								<span class="input-group-text search_btn"><i class="fas fa-search"></i></span>
 							</div>                            
@@ -367,7 +405,7 @@
 							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
 							<div class="action_menu">
 								<ul>
-									<li>
+                	<li>
 										<p style="text-align:center;">
 											{% if perfil.avatar == null %}
 											<img src="{{ asset('images/default.png') }}" class="rounded-circle user_img">
@@ -376,13 +414,14 @@
 											{% endif %}
 										</p>
 									</li>
+
 									<li><i class="fas fa-user-circle"></i> <a target="_self" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi Perfil</a></li>
 
-                                    {% if is_granted('ROLE_ADMIN') %}
+                  {% if is_granted('ROLE_ADMIN') %}
 									<li><i class="fas fa-lock"></i> <a target="_self" href="{{ path ('app_admin') }}">Administración</a></li>
-                                    {% endif %}
+                  {% endif %}
 									<li><i class="fas fa-cog"></i><a href="{{ path ('configuracion')}}">Configurar</a></li>
-									<li><i class="fas fa-times"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
+                  <li><i class="fas fa-power-off"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
 								</ul>
 							</div>
 						</div>
