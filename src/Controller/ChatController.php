@@ -17,9 +17,12 @@ class ChatController extends AbstractController
     {
         $current_user = $this->getUser();
         $perfil = $perfilRepository->findOneBy(array('usuario' => $current_user->getId()));
+        $avatar = $perfil->getAvatar();
+
         return $this->render('chat/index.html.twig', [
             'controller_name' => 'ChatController',
             'perfil' => $perfil,
+            'avatar' => $avatar,
         ]);
     }
 

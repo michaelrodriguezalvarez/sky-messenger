@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Flex\Path;
 
 /**
  * @Route("/perfil")
@@ -89,7 +90,8 @@ class PerfilController extends AbstractController
                 // this is needed to safely include the file name as part of the URL
                 $safeFilename = $slugger->slug($originalFilename);
                 // $newFilename = $form->get('nick')->getData() . '.' . $avatarFile->guessExtension();
-                $newFilename = $form->get('nick')->getData() . '.jpg';
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
+
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -103,15 +105,22 @@ class PerfilController extends AbstractController
 
                 // updates the 'brochureFilename' property to store the PDF file name
                 // instead of its contents
+
+                $Path = $this->getParameter('uploads_directory') . "/" . $perfil->getAvatar();;
+
+                var_dump($Path);
+                if (file_exists($Path)) {
+                    if (unlink($Path)) {
+                        echo "success";
+                    } else {
+                        echo "fail";
+                    }
+                } else {
+                    echo "file does not exist";
+                };
+
                 $perfil->setAvatar($newFilename);
             }
-
-
-
-
-
-
-
 
 
             $this->getDoctrine()->getManager()->flush();

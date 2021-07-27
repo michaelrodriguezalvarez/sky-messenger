@@ -95,7 +95,7 @@ class UserController extends AbstractController
      */
     public function delete(Request $request, User $user): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($user);
             $entityManager->flush();
@@ -110,14 +110,14 @@ class UserController extends AbstractController
     public function getLoguedList(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository): JsonResponse
     {
         try {
-            $perfiles = $perfilRepository->findAll();               
+            $perfiles = $perfilRepository->findAll();
             $users = [];
             // Estableciendo como primer elemento a la sala pública
-            array_push($users, ['id'=>-1, 'nick'=>'Sala pública', 'perfil'=>-1, 'roles'=>array('ROLE_SALA_PUBLICA'), 'activo'=>true]);
+            array_push($users, ['id' => -1, 'nick' => 'Sala pública', 'perfil' => -1, 'roles' => array('ROLE_SALA_PUBLICA'), 'activo' => true, 'avatar' => 'sky_messenger.jpg']);
 
             foreach ($perfiles as $perfil) {
                 //Aquí añadí 'roles'=>$perfil->getUsuario()->getRoles() para que devuevla el rol como parte de los datos.
-                array_push($users, ['id'=>$perfil->getUsuario()->getId(), 'nick'=>$perfil->getNick(), 'perfil'=>$perfil->getId(), 'roles'=>$perfil->getUsuario()->getRoles(), 'activo'=>$perfil->getUsuario()->isActiveNow()]);
+                array_push($users, ['id' => $perfil->getUsuario()->getId(), 'nick' => $perfil->getNick(), 'perfil' => $perfil->getId(), 'roles' => $perfil->getUsuario()->getRoles(), 'activo' => $perfil->getUsuario()->isActiveNow(), 'avatar' => $perfil->getAvatar()]);
             }
 
             $response = new JsonResponse();
@@ -128,7 +128,7 @@ class UserController extends AbstractController
             $response->setStatusCode(Response::HTTP_OK);
 
             return $response;
-        } catch (\Throwable $th) {           
+        } catch (\Throwable $th) {
             $response = new JsonResponse();
             $response->setData([
                 'success' => false,

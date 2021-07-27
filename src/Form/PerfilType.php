@@ -38,7 +38,7 @@ class PerfilType extends AbstractType
                 ],
 
             ))
-            ->add('usuario', HiddenType::class);
+            ->add('usuario', HiddenType::class, array('mapped' => false));
     }
 
     public function configureOptions(OptionsResolver $resolver)
