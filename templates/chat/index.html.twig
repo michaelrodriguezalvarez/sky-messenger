@@ -349,13 +349,13 @@
 							<span id="action_menu_btn"><i class="fas fa-ellipsis-v"></i></span>
 							<div class="action_menu">
 								<ul>
-									<li><i class="fas fa-user-circle"></i> <a target="_blank" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi Perfil</a></li>
+									<li><i class="fas fa-user-circle"></i> <a target="_self" href="{{ path ('perfil_show', {'id':perfil.id})}}">Mi Perfil</a></li>
 
                                     {% if is_granted('ROLE_ADMIN') %}
-									<li><i class="fas fa-lock"></i> <a target="_blank" href="{{ path ('app_admin') }}">Administración</a></li>
+									<li><i class="fas fa-lock"></i> <a target="_self" href="{{ path ('app_admin') }}">Administración</a></li>
                                     {% endif %}
 									<li><i class="fas fa-cog"></i><a href="{{ path ('configuracion')}}">Configurar</a></li>
-									<li><i class="fas fa-times"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
+									<li><i class="fas fa-power-off"></i><a href="{{ path ('app_logout')}}">Salir</a></li>
 									{# <li><i class="fas fa-ban"></i> Block</li> #}
 								</ul>
 							</div>

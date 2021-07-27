@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Perfil
  *
- * @ORM\Table(name="perfil", indexes={@ORM\Index(name="fk_perfil_usuario", columns={"usuario"})})
+ * @ORM\Table(name="perfil", uniqueConstraints={@ORM\UniqueConstraint(name="unique_nick", columns={"nick"})}, indexes={@ORM\Index(name="fk_perfil_usuario", columns={"usuario"})})
  * @ORM\Entity
  */
 class Perfil
@@ -69,6 +69,13 @@ class Perfil
      * @ORM\Column(name="descripcion", type="text", length=65535, nullable=true)
      */
     private $descripcion;
+
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="avatar", type="string", length=255, nullable=true)
+     */
+    private $avatar;
 
     /**
      * @var \User
@@ -165,6 +172,18 @@ class Perfil
     public function setDescripcion(?string $descripcion): self
     {
         $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

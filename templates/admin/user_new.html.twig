@@ -1,0 +1,64 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Administración{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script src="{{ asset('js/sweetalert.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+{% for flashError in app.flashes('errors') %}
+	 <script>
+        Swal.fire({
+			icon: 'error',
+			title: 'Error',
+			text: '{{flashError}}',			
+			})
+        </script>
+{% endfor %}
+
+{% if errors | length > 0 %}
+	<script>
+        Swal.fire({
+			icon: 'error',
+			title: 'Error',
+			text: '{{ errors[0].message }}',
+		})
+    </script>
+{% endif%}
+
+{% for flashSuccess in app.flashes('success') %}
+	 <script>
+        Swal.fire({
+			icon: 'success',
+			title: 'Información',
+			text: '{{flashSuccess}}',			
+			})
+        </script>
+{% endfor %}
+
+{{ parent() }}
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Adicionar Usuario</h1>
+                </div>
+            </div>
+            
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <br />
+                <button class="btn btn-primary">{{ button_label|default('Adicionar') }}</button>
+                <br />
+                <br />               
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+{% endblock %}
