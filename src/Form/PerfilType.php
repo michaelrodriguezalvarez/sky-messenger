@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Perfil;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -20,10 +21,20 @@ class PerfilType extends AbstractType
             ->add('apellidos')
             ->add('direccion')
             ->add('telefono')
-            ->add('sexo')
+            ->add('sexo', ChoiceType::class, array(
+                'placeholder' => 'Sexo',
+                'label' => 'Sexo',
+                'required'=> true,
+                'choices' => array(
+                    'Masculino'=>'Masculino',
+                    'Femenino'=>'Femenino'
+                    )
+            ))
+            ->add('descripcion')
             ->add('avatar', filetype::class, array(
                 "label" => "Foto de Perfil:",
-                "data_class" => null,
+                "help" => "No especificar para mantener el avatar actual",
+                //"data_class" => null,
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [

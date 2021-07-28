@@ -39,7 +39,7 @@
         <div class="wrap-login100">
 
             <div class="text-center w-full">	
-                <p class="txt1">PERFIL</p>
+                <p class="txt1"><b>PERFIL</b></p>
                 <br />
             </div>    
 
@@ -61,37 +61,26 @@
 
             <div class="container-login100-form-btn">
                 <label class="txt2">							
-                    <label for="avisar" class="txt1">{{ perfil.nombre }} {{ perfil.apellidos }} ({{ perfil.nick }})</label> 
+                    <label for="avisar" class="txt1">
+                    {{ perfil.nombre }} {{ perfil.apellidos }} ({{ perfil.nick }})
+                    {{ (perfil.sexo == 'Masculino') ? '<i class="fa fa-mars fa-fw"></i>' : '<i class="fa fa-venus fa-fw"></i>' }}
+                    </label> 
                 </label>
             </div>
 
             <div class="container-login100-form-btn p-t-10">
                 <label class="txt2">							
-                    <label for="avisar" class="txt1"><b>Dirección:</b></label> 
+                    <label for="avisar" class="txt1"><b>Contacto:</b></label> 
                 </label>
             </div>
-
-            <div class="container-login100-form-btn">
-                <label class="txt2">							
-                    <label for="avisar" class="txt1">{{ perfil.direccion }}</label> 
-                </label>
-            </div>
-
+            
             <div class="container-login100-form-btn p-t-10">
                 <label class="txt2">							
-                    <label for="avisar" class="txt1"><b>Teléfono:</b> {{ perfil.telefono }}</label> 
-                </label>
-            </div>
-
-            <div class="container-login100-form-btn p-t-10">
-                <label class="txt2">							
-                    <label for="avisar" class="txt1"><b>Sexo:</b> {{ perfil.sexo }}</label> 
-                </label>
-            </div>
-
-            <div class="container-login100-form-btn p-t-10">
-                <label class="txt2">							
-                    <label for="avisar" class="txt1"><b>Email:</b> {{ perfil.usuario.email }}</label> 
+                    <label for="avisar" class="txt1">
+                        <b>Email:</b> {{ perfil.usuario.email }} <br />
+                        <b>Teléfono:</b> {{ perfil.telefono }} <br />
+                        <b>Dirección:</b> {{ perfil.direccion }}
+                    </label> 
                 </label>
             </div>
 

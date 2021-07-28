@@ -1,32 +1,166 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Perfil{% endblock %}
+{% block title %}Pefil{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/all.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/main.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chat/css/jquery.mCustomScrollbar.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animate/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
+
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.js') }}"></script>
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid h-100">
-    <div class="row justify-content-center h-100">
-        <div class="col-md-8 col-xl-8 chat">
-            <div class="card mb-sm-3 mb-md-3 contacts_card">
-                <center><h1>Editar Perfil</h1></center>
-                    <center>
-                        {{ include('perfil/_form.html.twig') }}
-                    </center>
-    {# Esto comentado pq lleva a la lista de usuarios #}
-    {# <a href="{{ path('perfil_index') }}">back to list</a> #}
+<div class="limiter">
 
-    {# Y esto pa k no pueda eliminar #}
-    {# {{ include('perfil/_delete_form.html.twig') }} #}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{% if errors | length > 0 %}
+	<script>
+        Swal.fire({
+			icon: 'error',
+			title: '¡Error!',
+			text: '{{ errors[0].message }}',
+		})
+    </script>
+{% endif%}
+
+     {% for flashSuccess in app.flashes('success') %}
+	    <script>
+            Swal.fire({
+                icon: 'info',
+                title: 'Información',
+                text: '{{flashSuccess}}',			
+			})
+        </script>
+    {% endfor %}
+
+		<div class="container-login100" style="background-image: url('{{ asset('images/sky_messenger.jpg') }}');">
+			<div class="wrap-login100">
+			{{ form_start(form, {'attr': {'class': 'login100-form validate-form'}}) }}
+                     <div class="text-center w-full">	
+                        <p class="txt1"><b>PERFIL</b></p>
+                        <br />
+					</div>
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.nick,{'attr': {'class': 'input100 validate-form','placeholder':'Nick'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-user-o"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.nombre,{'attr': {'class': 'input100 validate-form','placeholder':'Nombre'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-drivers-license"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.apellidos,{'attr': {'class': 'input100 validate-form','placeholder':'Apellidos'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-drivers-license-o"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.direccion,{'attr': {'class': 'input100 validate-form','placeholder':'Dirección', 'style':'height: 90px; padding-top: 10px;'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-map-marker"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.telefono,{'attr': {'class': 'input100 validate-form','placeholder':'Teléfono'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-phone"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.sexo,{'attr': {'class': 'input100 validate-form','placeholder':'Sexo'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-mars"></i>
+						</span>
+					</div>
+
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.descripcion,{'attr': {'class': 'input100 validate-form','placeholder':'Descripción', 'style':'height: 90px; padding-top: 10px;'}}) }}
+						
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-info"></i>
+						</span>
+					</div>
+                    
+                    <div class="wrap-input100 validate-input m-b-10">
+						{{ form_widget(form.avatar,{'attr': {'class': 'input100 validate-form','placeholder':'Avatar','type':'file', 'style':'padding: 14px 10px 1px 50px !important;'}}) }}
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-photo"></i>
+						</span>
+					</div>
+                    <div class="text-center w-full mt-2">
+						<span class="txt1">
+                        <i class="fa fa-hand-pointer-o"></i>	
+							{{ form_help(form.avatar, {
+								'help_attr': {'class': 'txt1'}
+							}) }}												
+						</span>
+					</div>					
+                   
+					<div class="container-login100-form-btn p-t-10">
+						<button class="login100-form-btn" type="submit">
+							Guardar
+						</button>
+					</div>	
+
+                    <div class="text-center w-full mt-2">
+						<a class="txt1" href="{{ path('chat')}}">
+                        <i class="fa fa-long-arrow-left"></i>	
+							Regresar al chat												
+						</a>
+					</div>		
+
+			{{ form_end(form) }}
+			</div>
+		</div>
+	</div>
+
+
+
+
+{# <div>
+    <span>Don't have an account? </span><a href="{{ path('app_register')}}">Register</a>
+</div> #}
+
+
+
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}
