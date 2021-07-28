@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Actividad;
+use App\Entity\Configuracion;
 use App\Entity\Perfil;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -11,6 +13,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -47,6 +50,9 @@ class RegistrationController extends AbstractController
             );
 
             $entityManager = $this->getDoctrine()->getManager();
+            $conn = $this->getDoctrine()->getConnection();
+            $conn->beginTransaction();
+
             $user->setRoles(array('ROLE_USER'));
 
             $perfil = new Perfil();
@@ -54,22 +60,44 @@ class RegistrationController extends AbstractController
             $perfil->setSexo($request->request->get("registration_form")["sexo"]);
             $perfil->setUsuario($user);
 
+            $actividad = new Actividad();
+            $actividad->setUsuario($user);
+            $actividad->setEstado(true);
+
+            $configuracion = new Configuracion();
+            $configuracion->setUsuario($user);
+            $configuracion->setAvisar(false);
+            
             $entityManager->persist($perfil->getUsuario());
+            $entityManager->persist($actividad);
+            $entityManager->persist($configuracion);
             $entityManager->persist($perfil);
+
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            try 
+            {             
+                // generate a signed url and email it to the user
+                $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('sky@localhost.com', 'Sky Messenger'))
                     ->to($user->getEmail())
                     ->subject('Por favor confirme su registro en Sky Messenger')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-            // do anything else you need here, like send an email
-
-            $this->addFlash('success', 'Registration success. Please verify your email address.');
-            return $this->redirectToRoute('app_login');
+                );
+                
+                // do anything else you need here, like send an email
+                $conn->commit();
+                $this->addFlash('success', 'Creación de cuenta completada. Por favor, revise su correo electrónico para activar su cuenta.');
+                return $this->redirectToRoute('app_login');
+            } catch (TransportException $th) {
+                $conn->rollBack();
+                if(str_contains($th->getMessage(), "with message \"550 Address") == true){
+                    $this->addFlash('verify_email_error', 'La dirección de correo especificada no existe. Verifique la misma e intente nuevamente.');            
+                }else{
+                    $this->addFlash('verify_email_error', 'El servidor de correo nuestro no está disponible, intente más tarde. Perdone las molestias ocasionadas.');            
+                }
+            }
         }     
 
         return $this->render('registration/register.html.twig', [
@@ -105,7 +133,7 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', 'Se ha verificado satisfactoriamente su correo.');
 
         return $this->redirectToRoute('app_login');
     }

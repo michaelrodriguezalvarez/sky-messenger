@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -34,7 +35,7 @@ class RegistrationFormType extends AbstractType
                     'Femenino' => 'Femenino'
                 ),
             ))
-            ->add('email')
+            ->add('email', EmailType::class)
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
@@ -55,10 +56,10 @@ class RegistrationFormType extends AbstractType
                             'message' => 'Usted debe especificar la contraseña',
                         ]),
                         new Length([
-                            'min' => 8,
+                            'min' => 4,
                             'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
-                            // max length allowed by Symfony for security reasons
                             'max' => 100,
+                            'maxMessage' => 'La contraseña no debe tener más de {{ limit }} caracteres',
                         ]),
                     ]
                 ),
@@ -69,10 +70,10 @@ class RegistrationFormType extends AbstractType
                             'message' => 'Usted debe especificar la contraseña',
                         ]),
                         new Length([
-                            'min' => 8,
+                            'min' => 4,
                             'minMessage' => 'La contraseña debe tener al menos {{ limit }} caracteres',
-                            // max length allowed by Symfony for security reasons
                             'max' => 100,
+                            'maxMessage' => 'La contraseña no debe tener más de {{ limit }} caracteres',
                         ]),
                     ]
                 ),

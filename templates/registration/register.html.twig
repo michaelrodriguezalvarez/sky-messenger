@@ -24,10 +24,13 @@
 {% endblock %}
 
 {% block body %}
-    {% for flashError in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
-        <script>
-        console.log("prueba");
+    {% for flashError in app.flashes('verify_email_error') %}        
+		<script>
+        Swal.fire({
+			icon: 'error',
+			title: 'Error al registrar el usuario',
+			text: '{{flashError}}',
+			})
         </script>
     {% endfor %}
 
@@ -47,7 +50,7 @@
 
 
 		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
-			<div class="wrap-login100 p-t-190 p-b-30">
+			<div class="wrap-login100 p-t-10 p-b-30">
 
 				{# <form class="login100-form validate-form"> #}
                 {{ form_start(registrationForm, {'attr': {'class': 'login100-form validate-form'}}) }}
@@ -57,7 +60,7 @@
 					</div>
 
 					<span class="login100-form-title p-t-20 p-b-45">
-						Regístrese
+						Registro de usuario
                         
 					</span>
 
@@ -119,7 +122,7 @@
 						</button>
 					</div>
 
-					<div class="text-center w-full p-t-25 p-b-230">
+					<div class="text-center w-full p-t-25 p-b-10">
 						<a href="login" class="txt1">
 							Ya tengo una cuenta, Inciar Sesión
 						</a>

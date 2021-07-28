@@ -31,7 +31,7 @@
 
 <div class="limiter">
 		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
-			<div class="wrap-login100 p-t-190 p-b-30">
+			<div class="wrap-login100 p-t-10 p-b-30">
 				<form method="post" class="login100-form validate-form">
 
                 {% if error %}
@@ -52,9 +52,8 @@
 	 <script>
         Swal.fire({
 			icon: 'info',
-			title: 'Se ha registrado con exito!',
-			text: 'Por favor revise su bandeja de entrada, le hemos enviado un correo de validación.'
-			
+			title: 'Se ha registrado con exito',
+			text: '{{ flashSuccess }}',			
 			})
         </script>
 
@@ -104,7 +103,7 @@
 						</button>
 					</div>
 
-					<div class="text-center w-full p-t-25 p-b-230">
+					<div class="text-center w-full p-t-25 p-b-30">
 						<a href="#" class="txt1">
 							¿Olvidó su usuario/contraseña?
 						</a>
