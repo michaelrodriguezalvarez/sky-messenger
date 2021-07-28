@@ -35,17 +35,14 @@
 				<form method="post" class="login100-form validate-form">
 
                 {% if error %}
-        {# <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}
-
-        <script>
-        Swal.fire({
-  icon: 'error',
-  title: '¡Error!',
-  text: 'Por favor verifique sus credenciales',
-  footer: '<a href="">¿Olvidó su usuario/contraseña?</a>'
-})
-        </script>
-    {% endif %}
+				<script>
+					Swal.fire({
+						icon: 'error',
+						title: 'Error al entrar',
+						text: '{{ error.message }}',
+					})
+				</script>
+    			{% endif %}
 
      {% for flashSuccess in app.flashes('success') %}
 

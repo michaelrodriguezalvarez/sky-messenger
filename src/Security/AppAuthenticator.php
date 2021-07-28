@@ -2,7 +2,9 @@
 
 namespace App\Security;
 
+use App\Entity\Actividad;
 use App\Entity\User;
+use App\Repository\ActividadRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,7 +82,23 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
     public function checkCredentials($credentials, UserInterface $user)
     {
         /** @var User $user */
-        return ($this->passwordEncoder->isPasswordValid($user, $credentials['password']) && $user->isVerified());
+        $correcto = false;
+        if($this->passwordEncoder->isPasswordValid($user, $credentials['password'])){
+            if($user->isVerified()){
+                /** @var Actividad $actividad */
+                $actividad = $this->entityManager->getRepository(Actividad::class)->findOneBy(array('usuario'=>$user->getId()));
+                if($actividad->getEstado()){
+                    return true;
+                }else{
+                    throw new CustomUserMessageAuthenticationException('Su cuenta se encuentra inactiva, contactar con soporte.infotecstudio@gmail.com.');
+                }
+            }
+            else{
+                throw new CustomUserMessageAuthenticationException('Usted debe verificar su correo para poder entrar.');
+            }
+        }else{
+            throw new CustomUserMessageAuthenticationException('Por favor verifique sus credenciales.');
+        }
     }
 
     /**
