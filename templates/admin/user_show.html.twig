@@ -2,6 +2,11 @@
 
 {% block title %}Administración{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/sky.css') }}">
+{% endblock %}
+
 {% block body %}
 
 {{ parent() }}
@@ -18,7 +23,17 @@
 
             <div>
                 <table class="table">
-                    <tbody>                       
+                    <tbody> 
+                        <tr>
+                            <th>Avatar</th>
+                            <td>
+                                {% if perfil_mostrar.avatar == null %}
+                                    <img src="{{ asset('images/default.png') }}" class="img_perfil_index">
+                                {% else %}
+                                    <img src="{{ asset('uploads/' ~ perfil_mostrar.avatar) }}" class="img_perfil_index">
+                                {% endif %}
+                            </td>
+                        </tr>                      
                         <tr>
                             <th>Email</th>
                             <td>{{ user_mostrar.email }}</td>

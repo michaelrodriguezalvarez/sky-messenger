@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
 {{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/sky.css') }}">
     <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/plugins/dataTables/padding.bootstrap.fix.css') }}">
 
@@ -63,7 +64,8 @@
                 <th>Nombre y Apellidos (nick)</th>       
                 <th>Email</th>
                 <th>Rol</th>  
-                <th>Sexo</th>             
+                <th>Sexo</th>  
+                <th>Avatar</th>            
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -73,7 +75,14 @@
                 <td>{{ user_perfil.nombre }} {{ user_perfil.apellidos }} ({{ user_perfil.nick }})</td>
                 <td>{{ user_perfil.usuario.isVerified == '1' ? '<i class="fa fa-check-circle-o fa-fw"></i>' : '<i class="fa fa-circle-o fa-fw"></i>'}} {{user_perfil.usuario.email }}</td>
                 <td>{{ user_perfil.usuario.roles[0] == "ROLE_ADMIN" ? 'Administrador' : 'Usuario' }}</td>  
-                <td>{{ user_perfil.sexo == 'Masculino' ? '<i class="fa fa-mars fa-fw"></i>' : '<i class="fa fa-venus fa-fw"></i>' }}</td>                
+                <td>{{ user_perfil.sexo == 'Masculino' ? '<i class="fa fa-mars fa-fw"></i>' : '<i class="fa fa-venus fa-fw"></i>' }}</td>             
+                <td>
+                    {% if user_perfil.avatar == null %}
+						<img src="{{ asset('images/default.png') }}" class="img_perfil_index">
+					{% else %}
+						<img src="{{ asset('uploads/' ~ user_perfil.avatar) }}" class="img_perfil_index">
+					{% endif %}
+                </td>                   
                 <td>
                     <a href="{{ path('app_admin_user_show', {'id': user_perfil.usuario.id}) }}">Detalles</a>
                     <a href="{{ path('app_admin_user_edit', {'id': user_perfil.usuario.id}) }}">Editar</a>

@@ -34,7 +34,6 @@ class PerfilType extends AbstractType
             ->add('avatar', filetype::class, array(
                 "label" => "Foto de Perfil:",
                 "help" => "No especificar para mantener el avatar actual",
-                //"data_class" => null,
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
