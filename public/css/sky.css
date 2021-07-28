@@ -34,3 +34,9 @@
     display: block;
     margin: auto;
 }
+
+.img_perfil_show {
+    width:100px;
+    height:100px;
+    border-radius:50px;
+}

@@ -3,77 +3,130 @@
 {% block title %}Perfil{% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/all.css') }}">
-    <link rel="stylesheet" href="{{ asset('vendor/chat/css/main.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/chat/css/jquery.mCustomScrollbar.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('fonts/Linearicons-Free-v1.0.0/icon-font.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/animate/animate.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/css-hamburgers/hamburgers.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('vendor/select2/select2.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/util.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('css/sky.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+	<script src="{{ asset('vendor/jquery/jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/popper.js') }}"></script>
+	<script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('vendor/select2/select2.min.js') }}"></script>
+	<script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/sweetalert.js') }}"></script>
 {% endblock %}
 
 {% block body %}
+<div class="limiter">
+     {% for flashSuccess in app.flashes('success') %}
+	    <script>
+            Swal.fire({
+                icon: 'info',
+                title: 'Información',
+                text: '{{flashSuccess}}',			
+			})
+        </script>
+    {% endfor %}
 
-<div class="container-fluid h-100">
-    <div class="row justify-content-center h-100">
-        <div class="col-md-8 col-xl-8 chat">
-            <div class="card mb-sm-3 mb-md-3 contacts_card">
-    <h1><center>Perfil</center></h1>
+    <div class="container-login100" style="background-image: url('{{ asset('images/sky_messenger.jpg') }}');">
+        <div class="wrap-login100">
 
-    
-<center>
-    <table class="table">
-        <tbody>           
-            <tr>
-                <th>Nick</th>
-                <td>{{ perfil.nick }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ perfil.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Apellidos</th>
-                <td>{{ perfil.apellidos }}</td>
-            </tr>
-            <tr>
-                <th>Direccion</th>
-                <td>{{ perfil.direccion }}</td>
-            </tr>
-            <tr>
-                <th>Telefono</th>
-                <td>{{ perfil.telefono }}</td>
-            </tr>
-            <tr>
-                <th>Sexo</th>
-                <td>{{ perfil.sexo }}</td>
-            </tr>
-            <tr>
-                <th>Correo</th>
-                <td>{{ perfil.usuario.email }}</td>
-            </tr>
-            <tr>
-                <th>Descripción</th>
-                <td>{{ perfil.descripcion }}</td>
-            </tr>
-        </tbody>
-    </table>
-  {# <a href="{{ path('perfil_edit', {'id': perfil.id}) }}">Editar</a> #}
-    </center>
- </div>  
-   <div class="row ">
-    <div class="col">
-            <a href="{{ path('chat') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Regresar al Chat</a>
-    </div>
+            <div class="text-center w-full">	
+                <p class="txt1">PERFIL</p>
+                <br />
+            </div>    
 
-    <div class="row justify-content">
-        <div class="px-md-5">
+            <div class="container-login100-form-btn p-t-3">
+                <label class="txt2">							
+                    {% if perfil.avatar == null %}
+						<img src="{{ asset('images/default.png') }}" class="img_perfil_show">
+					{% else %}
+						<img src="{{ asset('uploads/' ~ perfil.avatar) }}" class="img_perfil_show">
+					{% endif %}
+                </label>
+            </div>               
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Nombre y Apellidos:</b></label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1">{{ perfil.nombre }} {{ perfil.apellidos }} ({{ perfil.nick }})</label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Dirección:</b></label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1">{{ perfil.direccion }}</label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Teléfono:</b> {{ perfil.telefono }}</label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Sexo:</b> {{ perfil.sexo }}</label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Email:</b> {{ perfil.usuario.email }}</label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn p-t-10">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1"><b>Descripción:</b></label> 
+                </label>
+            </div>
+
+            <div class="container-login100-form-btn">
+                <label class="txt2">							
+                    <label for="avisar" class="txt1">{{ perfil.descripcion }}</label> 
+                </label>
+            </div>
+
             {% if current_user_id == perfil.usuario.id %}
-                <a href="{{ path('perfil_edit', {'id': perfil.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i>Editar</a>
-            {% endif %}
+            <div class="text-center w-full mt-2">
+                <a class="txt1" href="{{ path('perfil_edit', {'id': perfil.id}) }}">
+                <i class="fa fa-pencil"></i>
+                Editar						
+                </a>
+            </div>                
+            {% endif %}                
+
+            <div class="text-center w-full mt-2">
+                <a class="txt1" href="{{ path('chat')}}">
+                <i class="fa fa-long-arrow-left"></i>	
+                    Regresar al chat												
+                </a>
+            </div>	
         </div>
     </div>
- </div>
+</div>
+{% endblock %}
 
- </div> 
- 
- </div>   
- </div>   
+{% block footer %}
+
 {% endblock %}

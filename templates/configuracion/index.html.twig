@@ -48,7 +48,7 @@
         {# <div class="alert alert-info" role="alert">{{ flashSuccess }}</div> #}
     {% endfor %}
 
-		<div class="container-login100" style="background-image: url('images/sky_messenger.jpg');">
+		<div class="container-login100" style="background-image: url('{{ asset('images/sky_messenger.jpg') }}');">
 			<div class="wrap-login100">
 			{{ form_start(form, {'attr': {'class': 'login100-form validate-form'}}) }}
                      <div class="text-center w-full">	
