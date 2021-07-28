@@ -97,7 +97,7 @@ class MensajeController extends AbstractController
      */
     public function delete(Request $request, Mensaje $mensaje): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$mensaje->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $mensaje->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($mensaje);
             $entityManager->flush();
@@ -112,37 +112,36 @@ class MensajeController extends AbstractController
     public function send(Request $request, UserRepository $userRepository, MailerInterface $mailer, EntityManagerInterface $entityManager): Response
     {
         try {
-            if($_POST){                
+            if ($_POST) {
                 $current_user = $this->getUser();
-                if ($this->isCsrfTokenValid('enviar_mensaje'.$current_user->getId(), $request->request->get('_token'))) {
+                if ($this->isCsrfTokenValid('enviar_mensaje' . $current_user->getId(), $request->request->get('_token'))) {
                     $mensaje = new Mensaje();
                     $mensaje->setTexto($request->request->get('texto'));
                     $mensaje->setFecha(new \DateTime());
                     $mensaje->setDestinatario($userRepository->findOneBy(array('id' => $request->request->get('destinatario'))));
                     $mensaje->setRemitente($this->getUser());
-                    
+
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->persist($mensaje);
                     $entityManager->flush();
-
+                  
                     $this->AvisarCorreoMensajesNuevos($mensaje,(new TemplatedEmail()),$mailer, $entityManager);
-        
+
                     $response = new JsonResponse();
                     $response->setData([
                         'success' => true,
-                        'data' => 'Message sent'
+                        'data' => 'Message sent',
                     ]);
                     $response->setStatusCode(Response::HTTP_OK);
-        
+
                     return $response;
-                }else{
+                } else {
                     throw new BadRequestException(Response::HTTP_BAD_REQUEST);
                 }
-            }else{
+            } else {
                 throw new BadRequestException(Response::HTTP_BAD_REQUEST);
             }
-
-        } catch (\Throwable $th) {           
+        } catch (\Throwable $th) {
             $response = new JsonResponse();
             $response->setData([
                 'success' => false,
@@ -161,25 +160,26 @@ class MensajeController extends AbstractController
     public function getPublicMessages(Request $request, MensajeRepository $mensajeRepository, PerfilRepository $perfilRepository): Response
     {
         try {
-            $mensajesPublicos = $mensajeRepository->getPublicMessages();       
+            $mensajesPublicos = $mensajeRepository->getPublicMessages();
             $mensajes = [];
 
             /** @var Mensaje $mensaje */
             foreach ($mensajesPublicos as $mensaje) {
                 /** @var Perfil $remitente */
-                $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente())); 
+                $remitente = $perfilRepository->findOneBy(array('usuario' => $mensaje->getRemitente()));
                 array_push($mensajes, [
-                    'id'=>$mensaje->getId(), 
-                    'destinatario'=>null, 
-                    'remitente'=>[
-                        'id_usuario'=>$remitente->getUsuario()->getId(),
-                        'nick'=>$remitente->getNick()
+                    'id' => $mensaje->getId(),
+                    'destinatario' => null,
+                    'remitente' => [
+                        'id_usuario' => $remitente->getUsuario()->getId(),
+                        'nick' => $remitente->getNick(),
+                        'avatar' => $remitente->getAvatar()
                     ],
                     'texto' => $mensaje->getTexto(),
                     'fecha' => $mensaje->getFecha()
                 ]);
             }
-            
+
             $response = new JsonResponse();
             $response->setData([
                 'success' => true,
@@ -187,8 +187,7 @@ class MensajeController extends AbstractController
             ]);
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
-
-        } catch (\Throwable $th) {           
+        } catch (\Throwable $th) {
             $response = new JsonResponse();
             $response->setData([
                 'success' => false,
@@ -207,29 +206,30 @@ class MensajeController extends AbstractController
         try {
             /** @var User $current_user */
             $current_user = $this->getUser();
-            $mensajesPrivados = $mensajeRepository->getPrivateMessages($id_usuario_seleccionado,$current_user->getId());
+            $mensajesPrivados = $mensajeRepository->getPrivateMessages($id_usuario_seleccionado, $current_user->getId());
             $mensajes = [];
 
             /** @var Mensaje $mensaje */
             foreach ($mensajesPrivados as $mensaje) {
                 /** @var Perfil $remitente */
-                $remitente = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getRemitente())); 
-                $destinatario = $perfilRepository->findOneBy(array('usuario'=>$mensaje->getDestinatario())); 
+                $remitente = $perfilRepository->findOneBy(array('usuario' => $mensaje->getRemitente()));
+                $destinatario = $perfilRepository->findOneBy(array('usuario' => $mensaje->getDestinatario()));
                 array_push($mensajes, [
-                    'id'=>$mensaje->getId(), 
-                    'destinatario'=>[
-                        'id_usuario'=>$destinatario->getUsuario()->getId(),
-                        'nick'=>$destinatario->getNick()
-                    ], 
-                    'remitente'=>[
-                        'id_usuario'=>$remitente->getUsuario()->getId(),
-                        'nick'=>$remitente->getNick()
+                    'id' => $mensaje->getId(),
+                    'destinatario' => [
+                        'id_usuario' => $destinatario->getUsuario()->getId(),
+                        'nick' => $destinatario->getNick()
+                    ],
+                    'remitente' => [
+                        'id_usuario' => $remitente->getUsuario()->getId(),
+                        'nick' => $remitente->getNick(),
+                        'avatar' => $remitente->getAvatar()
                     ],
                     'texto' => $mensaje->getTexto(),
                     'fecha' => $mensaje->getFecha()
                 ]);
             }
-            
+
             $response = new JsonResponse();
             $response->setData([
                 'success' => true,
@@ -237,8 +237,7 @@ class MensajeController extends AbstractController
             ]);
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
-
-        } catch (\Throwable $th) {           
+        } catch (\Throwable $th) {
             $response = new JsonResponse();
             $response->setData([
                 'success' => false,
@@ -253,21 +252,20 @@ class MensajeController extends AbstractController
      * @Route("/api/mensaje/no_leidos/{id_remitente}", name="mensaje_no_leido_cantidad", methods={"GET"})
      */
     public function getCountUnreadMessages(Request $request, int $id_remitente, MensajeRepository $mensajeRepository): Response
-    {       
-        try {           
-                /**@var User $current_user */
-                $current_user = $this->getUser();                   
-                $cantidad = $mensajeRepository->getUnreadMessages($current_user, $id_remitente);
-                $response = new JsonResponse();
-                $response->setData([
-                    'success' => true,
-                    'data' => $cantidad
-                ]);
-                $response->setStatusCode(Response::HTTP_OK);
-        
-                return $response;    
+    {
+        try {
+            /**@var User $current_user */
+            $current_user = $this->getUser();
+            $cantidad = $mensajeRepository->getUnreadMessages($current_user, $id_remitente);
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => true,
+                'data' => $cantidad
+            ]);
+            $response->setStatusCode(Response::HTTP_OK);
 
-        } catch (\Throwable $th) {           
+            return $response;
+        } catch (\Throwable $th) {
             $response = new JsonResponse();
             $response->setData([
                 'success' => false,

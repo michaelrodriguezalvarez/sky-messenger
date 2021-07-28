@@ -16,3 +16,21 @@
     right: 0.4em;
     border:1.5px solid white;
 }
+
+.action_menu{
+    
+    z-index: 1;
+    position: absolute;
+    padding: 15px 0;
+    background-color: rgba(4,25,84,96%) !important;
+    color: white;
+    border-radius: 15px;
+    top: 30px;
+    right: 15px;
+    display: none;
+}
+
+.img_profile_center {
+    display: block;
+    margin: auto;
+}

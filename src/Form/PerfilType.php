@@ -6,6 +6,9 @@ use App\Entity\Perfil;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class PerfilType extends AbstractType
 {
@@ -18,8 +21,24 @@ class PerfilType extends AbstractType
             ->add('direccion')
             ->add('telefono')
             ->add('sexo')
-            ->add('usuario')
-        ;
+            ->add('avatar', filetype::class, array(
+                "label" => "Foto de Perfil:",
+                "data_class" => null,
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Por favor seleccione un archivo de imágen válido (JPEG/PNG) y no mayor de 500kb',
+                    ])
+                ],
+
+            ))
+            ->add('usuario', HiddenType::class, array('mapped' => false));
     }
 
     public function configureOptions(OptionsResolver $resolver)

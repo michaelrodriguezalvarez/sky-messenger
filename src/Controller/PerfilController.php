@@ -8,6 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Flex\Path;
 
 /**
  * @Route("/perfil")
@@ -66,12 +70,12 @@ class PerfilController extends AbstractController
     /**
      * @Route("/{id}/edit", name="perfil_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Perfil $perfil): Response
+    public function edit(Request $request, Perfil $perfil, SluggerInterface $slugger): Response
     {
         /** @var $current_user User */
         $current_user = $this->getUser();
-        if($current_user->getRoles()[0] == "ROLE_USER"){
-            if($current_user->getId() != $perfil->getUsuario()->getId()){
+        if ($current_user->getRoles()[0] == "ROLE_USER") {
+            if ($current_user->getId() != $perfil->getUsuario()->getId()) {
                 throw $this->createAccessDeniedException();
             }
         }
@@ -79,9 +83,35 @@ class PerfilController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $avatarFile = $form->get('avatar')->getData();
+
+            if ($avatarFile) {
+                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);               
+                $safeFilename = $slugger->slug($originalFilename);               
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
+
+                try {
+                    $avatarFile->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                $Path = $this->getParameter('uploads_directory') . "/" . $perfil->getAvatar();
+                if ($perfil->getAvatar() != null){
+                    if (file_exists($Path)){
+                        unlink($Path);
+                    }
+                }
+                $perfil->setAvatar($newFilename);
+            }
+
+
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('perfil_index');
+            return $this->redirectToRoute('perfil_show', array('id'=>$perfil->getId()));
         }
 
         return $this->render('perfil/edit.html.twig', [
@@ -95,7 +125,7 @@ class PerfilController extends AbstractController
      */
     public function delete(Request $request, Perfil $perfil): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$perfil->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $perfil->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($perfil);
             $entityManager->flush();
