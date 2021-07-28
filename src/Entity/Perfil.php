@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\Repository\PerfilRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Perfil
  *
  * @ORM\Table(name="perfil", uniqueConstraints={@ORM\UniqueConstraint(name="unique_nick", columns={"nick"})}, indexes={@ORM\Index(name="fk_perfil_usuario", columns={"usuario"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=PerfilRepository::class)
  */
 class Perfil
 {
@@ -86,11 +87,6 @@ class Perfil
      * })
      */
     private $usuario;
-
-    /**
-     * @ORM\Column(type="string", length=500, nullable=true)
-     */
-    private $avatar;
 
     public function getId(): ?int
     {
@@ -204,18 +200,4 @@ class Perfil
 
         return $this;
     }
-
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): self
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-
 }

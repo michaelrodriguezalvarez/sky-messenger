@@ -346,7 +346,11 @@
 								$("#listado_destinatarios ul").append('<li><a href="#" onclick="EstablecerDestinatario('+item.id+',\''+item.nick+'\',\''+ roles[item.roles]+'\');">'+item.nick+'</a><span> '+ roles[item.roles]+' </span><a target="_blank" href="'+base_url+'/perfil/'+item.perfil+'">(Ver perfil)</a></li>');
 								var perfilUrl = base_url+'/perfil/'+item.perfil;
 								var icono_activo = (item.activo == true) ? 'online_icon': 'offline_icon';
-								$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="{{ asset('vendor/chat/img/_D.jpg') }}" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+item.id+',\''+item.nick+'\', \''+roles[item.roles]+'\');">'+item.nick+'</span></a><p>'+roles[item.roles]+'</p></div></div></li>');
+								var avatar="{{ asset('images/default.png') }}";
+								if(item.avatar!=null){
+									avatar="{{ asset('uploads/') }}"+item.avatar;
+								}
+								$("#usuarios").append('<li class="active"><div class="d-flex bd-highlight"><div class="img_cont"><img  src="'+avatar+'" class="rounded-circle user_img" onclick=imageClick("'+perfilUrl+'") ><span class="'+icono_activo+'"></span></div><div class="user_info"><span><a href="#" onclick="EstablecerDestinatario('+item.id+',\''+item.nick+'\', \''+roles[item.roles]+'\');">'+item.nick+'</span></a><p>'+roles[item.roles]+'</p></div></div></li>');
 								};
 							};
 						};
