@@ -88,6 +88,11 @@ class Perfil
      */
     private $usuario;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $mensajes_eliminados = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -197,6 +202,18 @@ class Perfil
     public function setUsuario(?User $usuario): self
     {
         $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    public function getMensajesEliminados(): ?array
+    {
+        return $this->mensajes_eliminados;
+    }
+
+    public function setMensajesEliminados(?array $mensajes_eliminados): self
+    {
+        $this->mensajes_eliminados = $mensajes_eliminados;
 
         return $this;
     }

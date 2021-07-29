@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Flex\Path;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use App\Repository\UserRepository;
+use App\Repository\PerfilRepository;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @Route("/perfil")
@@ -86,8 +91,8 @@ class PerfilController extends AbstractController
             $avatarFile = $form->get('avatar')->getData();
 
             if ($avatarFile) {
-                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);               
-                $safeFilename = $slugger->slug($originalFilename);               
+                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
 
                 try {
@@ -100,8 +105,8 @@ class PerfilController extends AbstractController
                 }
 
                 $Path = $this->getParameter('uploads_directory') . "/" . $perfil->getAvatar();
-                if ($perfil->getAvatar() != null){
-                    if (file_exists($Path)){
+                if ($perfil->getAvatar() != null) {
+                    if (file_exists($Path)) {
                         unlink($Path);
                     }
                 }
@@ -111,7 +116,7 @@ class PerfilController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('perfil_show', array('id'=>$perfil->getId()));
+            return $this->redirectToRoute('perfil_show', array('id' => $perfil->getId()));
         }
 
         return $this->render('perfil/edit.html.twig', [
@@ -132,5 +137,59 @@ class PerfilController extends AbstractController
         }
 
         return $this->redirectToRoute('perfil_index');
+    }
+
+    /**
+     * @Route("/api/delete_message", name="mensaje_eliminar_api", methods={"POST"})
+     */
+    public function delete_message(Request $request, UserRepository $userRepository, PerfilRepository $perfilRepository, EntityManagerInterface $entityManager): Response
+    {
+        try {
+            if ($_POST) {
+                $current_user = $this->getUser();
+                if ($this->isCsrfTokenValid('delete_message' . $current_user->getId(), $request->request->get('_token'))) {
+                    $id_mensaje_a_eliminar = $request->request->get('id_mensaje');
+                    $perfil = $perfilRepository->findOneBy(array('usuario' => $current_user->getId()));
+                    $mensajes_eliminados_previamente = $perfil->getMensajesEliminados();
+                    if ($mensajes_eliminados_previamente == null) {
+                        $mensajes_eliminados_previamente = [];
+                        array_push($mensajes_eliminados_previamente, $id_mensaje_a_eliminar);
+                        $perfil->setMensajesEliminados($mensajes_eliminados_previamente);
+                        $entityManager->flush();
+                    } else {
+                        if (!in_array($id_mensaje_a_eliminar, $mensajes_eliminados_previamente)) {
+                            array_push($mensajes_eliminados_previamente, $id_mensaje_a_eliminar);
+                            $entityManager = $this->getDoctrine()->getManager();
+                            $perfil->setMensajesEliminados($mensajes_eliminados_previamente);
+                            $entityManager->flush();
+                        }
+                    }
+
+                    $response = new JsonResponse();
+                    $response->setData([
+                        'success' => true,
+                        'data' => 'Message ' + $id_mensaje_a_eliminar + ' deleted.',
+                    ]);
+                    $response->setStatusCode(Response::HTTP_OK);
+
+                    return $response;
+                } else {
+                    throw new BadRequestException(Response::HTTP_BAD_REQUEST);
+                }
+            } else {
+                throw new BadRequestException(Response::HTTP_BAD_REQUEST);
+            }
+        } catch (\Throwable $th) {
+            $response = new JsonResponse();
+            $response->setData([
+                'success' => false,
+                'error' => $th->getMessage()
+
+            ]);
+
+            $response->setStatusCode(Response::HTTP_OK);
+
+            return $response;
+        }
     }
 }
