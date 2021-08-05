@@ -39,7 +39,7 @@
 					$.post(
                         "{{path('mensaje_eliminar_api')}}", 
                         {
-                            id_mensaje: msgid.toInteger(), 
+                            id_mensaje: msgid, 
                             _token: _token
                         }, 
                         function(data, status){
