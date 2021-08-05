@@ -190,7 +190,7 @@
 
 										var mensajes_eliminados= {{ perfil.mensajesEliminados | json_encode | raw }};
 										
-										if(mensajes_eliminados.includes(mensaje.id.toString())){
+										if(mensajes_eliminados!=null && mensajes_eliminados.includes(mensaje.id.toString())){
 											return;
 										}
 										
